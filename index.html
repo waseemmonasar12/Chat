@@ -3,130 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شات العائلة - مباشر</title>
+    <title>دردشة العائلة المشفرة 🔐</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
+    
     <style>
-        body { font-family: sans-serif; background: #e5ddd5; margin: 0; display: flex; justify-content: center; height: 100vh; }
-        .app-container { width: 100%; max-width: 480px; background: #fff; display: flex; flex-direction: column; height: 100%; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        body { font-family: sans-serif; background: #f0f2f5; margin: 0; display: flex; justify-content: center; height: 100vh; }
+        .app-container { width: 100%; max-width: 500px; background: #fff; display: flex; flex-direction: column; height: 100%; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        header { background: #075e54; color: white; padding: 15px; text-align: center; font-size: 1.2em; font-weight: bold; }
         
-        header { background: #075e54; color: white; padding: 15px; text-align: center; font-weight: bold; }
-        
-        /* منطقة ادخال الاسم - تظهر مرة واحدة */
-        #nameInputArea { padding: 20px; text-align: center; background: #fff; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        #username { padding: 10px; border: 1px solid #ccc; border-radius: 5px; width: 80%; margin-bottom: 10px; }
-        .btn-start { background: #25D366; color: white; border: none; padding: 10px 30px; border-radius: 5px; cursor: pointer; }
+        /* واجهة الدخول */
+        #login-screen { padding: 20px; text-align: center; background: white; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; justify-content: center; gap: 15px; }
+        input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+        button { background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
-        .chat-box { flex: 1; padding: 10px; overflow-y: auto; background: #e5ddd5; display: flex; flex-direction: column; gap: 8px; }
-        
-        .msg { padding: 8px 12px; border-radius: 8px; max-width: 75%; font-size: 14px; position: relative; word-wrap: break-word; }
-        .msg.me { background: #dcf8c6; align-self: flex-end; }
-        .msg.other { background: #fff; align-self: flex-start; }
-        .sender-name { font-size: 10px; color: #555; margin-bottom: 3px; display: block; }
+        /* منطقة الدردشة */
+        .chat-box { flex: 1; padding: 15px; overflow-y: auto; background: #e5ddd5; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px; border-radius: 10px; max-width: 80%; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
+        .me { background: #dcf8c6; align-self: flex-end; }
+        .other { background: #fff; align-self: flex-start; }
+        .sender { font-size: 11px; color: #075e54; font-weight: bold; display: block; margin-bottom: 4px; }
 
-        .input-area { padding: 10px; background: #f0f0f0; display: flex; gap: 10px; }
-        #messageInput { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ddd; }
-        .btn-send { background: #075e54; color: white; border: none; padding: 10px 15px; border-radius: 50%; cursor: pointer; }
+        .input-area { padding: 10px; background: #f0f0f0; display: flex; gap: 8px; }
+        #messageInput { flex: 1; border-radius: 20px; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <div id="nameInputArea">
-            <h3>أهلاً بك!</h3>
-            <p>اختر اسماً مستعاراً للدخول:</p>
-            <input type="text" id="username" placeholder="اكتب اسمك هنا...">
-            <button class="btn-start" onclick="enterChat()">دخول الشات</button>
+        <div id="login-screen">
+            <h2>🔐 دخول آمن</h2>
+            <input type="text" id="username" placeholder="اسمك المستعار">
+            <input type="password" id="chatPassword" placeholder="كلمة سر التشفير (للعائلة فقط)">
+            <p style="font-size: 12px; color: #666;">* كلمة السر هذه هي التي ستفك تشفير الرسائل.</p>
+            <button onclick="startApp()">دخول</button>
         </div>
 
-        <header>مجموعة العائلة ❤️</header>
+        <header>مجموعة العائلة المشفرة</header>
 
-        <div class="chat-box" id="chatBox">
-            </div>
+        <div class="chat-box" id="chatBox"></div>
 
         <div class="input-area">
-            <input type="text" id="messageInput" placeholder="اكتب رسالة...">
-            <button class="btn-send" onclick="sendMessage()">➤</button>
+            <input type="text" id="messageInput" placeholder="اكتب رسالة مشفرة...">
+            <button onclick="sendEncryptedMessage()">➤</button>
         </div>
     </div>
 
     <script>
-        // -----------------------------------------------------------
-        // 1. إعدادات Firebase (يجب استبدال هذا الجزء بكودك الخاص)
-        // -----------------------------------------------------------
+        // 1. ضع بياناتك من Firebase هنا (كما فعلنا سابقاً)
         const firebaseConfig = {
-  apiKey: "AIzaSyACnX1Xu-2XiyxYtGT_wUzfMqVcUddVxKs",
-  authDomain: "chat-9c623.firebaseapp.com",
-  databaseURL: "https://chat-9c623-default-rtdb.firebaseio.com",
-  projectId: "chat-9c623",
-  storageBucket: "chat-9c623.firebasestorage.app",
-  messagingSenderId: "858118572582",
-  appId: "1:858118572582:web:979ef639fed422a22ff4e7",
-  measurementId: "G-THT2B1RYEK"
-};
-        // تهيئة التطبيق
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+            apiKey: "AIzaSy...", 
+            authDomain: "chat-9c623.firebaseapp.com",
+            databaseURL: "https://chat-9c623-default-rtdb.firebaseio.com",
+            projectId: "chat-9c623",
+            storageBucket: "chat-9c623.appspot.com",
+            messagingSenderId: "858118572582",
+            appId: "1:858118572582:web:979ef639fed422a22ff4e7"
+        };
+
+        firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-
-        // متغيرات
         let myName = "";
-        
-        // دالة الدخول للشات
-        function enterChat() {
-            const nameField = document.getElementById("username");
-            if (nameField.value.trim() !== "") {
-                myName = nameField.value;
-                document.getElementById("nameInputArea").style.display = "none";
-            } else {
-                alert("الرجاء كتابة اسمك أولاً");
-            }
+        let encryptionKey = "";
+
+        // --- دوال التشفير من مشروعك الثاني ---
+        const uint8ToBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+        const base64ToUint8 = (str) => new Uint8Array(atob(str).split('').map(c => c.charCodeAt(0)));
+
+        async function encryptData(text, password) {
+            const encoder = new TextEncoder();
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
+            const aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["encrypt"]);
+            const encrypted = await crypto.subtle.encrypt({name: "AES-GCM", iv}, aesKey, encoder.encode(text));
+            const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+            result.set(salt, 0); result.set(iv, salt.length); result.set(new Uint8Array(encrypted), salt.length + iv.length);
+            return uint8ToBase64(result);
         }
 
-        // دالة إرسال الرسالة
-        function sendMessage() {
+        async function decryptData(cipherB64, password) {
+            try {
+                const bytes = base64ToUint8(cipherB64);
+                const salt = bytes.slice(0, 16); const iv = bytes.slice(16, 28); const data = bytes.slice(28);
+                const encoder = new TextEncoder();
+                const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
+                const aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
+                const decrypted = await crypto.subtle.decrypt({name: "AES-GCM", iv}, aesKey, data);
+                return new TextDecoder().decode(decrypted);
+            } catch (e) { return "🔐 [رسالة مشفرة - كلمة سر خاطئة]"; }
+        }
+
+        // --- إدارة التطبيق ---
+        function startApp() {
+            myName = document.getElementById("username").value;
+            encryptionKey = document.getElementById("chatPassword").value;
+            if (myName && encryptionKey) {
+                document.getElementById("login-screen").style.display = "none";
+                listenForMessages();
+            } else { alert("يرجى إدخال الاسم وكلمة السر"); }
+        }
+
+        async function sendEncryptedMessage() {
             const input = document.getElementById("messageInput");
-            const msg = input.value;
-
-            if (msg.trim() !== "") {
-                // إرسال البيانات إلى Firebase
-                database.ref("messages").push().set({
-                    sender: myName,
-                    text: msg,
-                    timestamp: Date.now()
-                });
-                input.value = "";
-            }
+            if (input.value.trim() === "") return;
+            const encrypted = await encryptData(input.value, encryptionKey);
+            database.ref("messages").push().set({ sender: myName, text: encrypted });
+            input.value = "";
         }
 
-        // الاستماع للرسائل الجديدة (تعمل تلقائياً عند وصول رسالة)
-        database.ref("messages").on("child_added", function(snapshot) {
-            const data = snapshot.val();
-            const chatBox = document.getElementById("chatBox");
-            
-            // إنشاء عنصر الرسالة
-            const msgDiv = document.createElement("div");
-            
-            // تحديد هل الرسالة مني أم من غيري
-            if (data.sender === myName) {
-                msgDiv.classList.add("msg", "me");
-                msgDiv.innerHTML = `${data.text}`;
-            } else {
-                msgDiv.classList.add("msg", "other");
-                msgDiv.innerHTML = `<span class="sender-name">${data.sender}</span>${data.text}`;
-            }
-
-            chatBox.appendChild(msgDiv);
-            chatBox.scrollTop = chatBox.scrollHeight; // النزول لآخر رسالة
-        });
-
-        // إرسال عند ضغط Enter
-        document.getElementById("messageInput").addEventListener("keypress", function(e) {
-            if (e.key === "Enter") sendMessage();
-        });
-
+        function listenForMessages() {
+            database.ref("messages").on("child_added", async (snapshot) => {
+                const data = snapshot.val();
+                const decryptedText = await decryptData(data.text, encryptionKey);
+                const chatBox = document.getElementById("chatBox");
+                const div = document.createElement("div");
+                div.className = `msg ${data.sender === myName ? 'me' : 'other'}`;
+                div.innerHTML = `<span class="sender">${data.sender}</span>${decryptedText}`;
+                chatBox.appendChild(div);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+        }
     </script>
 </body>
 </html>
+
