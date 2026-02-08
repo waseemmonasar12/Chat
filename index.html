@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تطبيق العائلة المشفر 🔐</title>
+    <title>Chat Secure 🔐</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,12 +13,11 @@
         :root {
             --primary: #00a884;
             --secondary: #005c4b;
-            --bg-glass: rgba(20, 30, 48, 0.90);
+            --bg-glass: rgba(20, 30, 48, 0.95);
             --msg-me: #005c4b;
             --msg-other: #202c33;
             --text-light: #e9edef;
             --text-gray: #8696a0;
-            --record-red: #ea4335;
             --delete-red: #f15c6d;
         }
 
@@ -32,27 +31,19 @@
             background-image: url('https://raw.githubusercontent.com/waseemmonasar12/Chat/f0981b25071c7ed7b1471a094327f9dea9e401fc/Aobida.jpeg'); 
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
             color: var(--text-light);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
         }
 
         body::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: -1;
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: -1;
         }
 
         .app-container {
             width: 100%; height: 100%; max-width: 1200px;
-            background: var(--bg-glass);
-            display: flex; flex-direction: column; position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5); overflow: hidden;
+            background: var(--bg-glass); display: flex; flex-direction: column;
+            position: relative; overflow: hidden;
         }
 
         @media (min-width: 768px) {
@@ -61,106 +52,71 @@
 
         .full-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(17, 27, 33, 0.98); z-index: 100;
+            background: #111b21; z-index: 100;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 20px; text-align: center; transition: opacity 0.5s;
+            text-align: center;
         }
 
         .hidden { display: none !important; }
 
-        input, select, button {
+        input, button {
             width: 100%; padding: 15px; margin: 10px 0;
             border-radius: 10px; border: 1px solid #333;
-            background: #2a3942; color: white;
-            font-family: 'Cairo', sans-serif; font-size: 16px; outline: none;
+            background: #2a3942; color: white; outline: none;
+            font-family: 'Cairo', sans-serif;
         }
 
-        button { background: var(--primary); border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button { background: var(--primary); border: none; font-weight: bold; cursor: pointer; }
         button:hover { background: #008f6f; }
         button.secondary { background: #333; }
 
         /* Sidebar */
         .sidebar {
             width: 100%; background: rgba(17, 27, 33, 0.95);
-            display: flex; flex-direction: column;
-            border-left: 1px solid rgba(255,255,255,0.1);
+            display: flex; flex-direction: column; border-left: 1px solid #333;
         }
         @media (min-width: 768px) { .sidebar { width: 350px; } }
 
         .sidebar-header {
-            padding: 15px; background: #202c33;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .user-profile { display: flex; align-items: center; gap: 10px; }
-        .avatar {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: var(--primary); display: flex; justify-content: center; align-items: center;
-            font-size: 20px; transition: transform 0.2s;
+            padding: 15px; background: #202c33; display: flex; justify-content: space-between; align-items: center;
         }
 
         .rooms-list { flex: 1; overflow-y: auto; padding: 10px; }
 
         .room-item {
             padding: 15px; border-bottom: 1px solid #2a3942; cursor: pointer;
-            display: flex; align-items: center; gap: 15px; transition: 0.2s; position: relative;
+            display: flex; align-items: center; gap: 15px;
         }
         .room-item:hover { background: #2a3942; }
-        .room-item.active { background: #2a3942; border-right: 3px solid var(--primary); }
 
         /* Chat Area */
-        .chat-area { flex: 1; display: flex; flex-direction: column; background: transparent; position: relative; }
+        .chat-area { flex: 1; display: flex; flex-direction: column; background: transparent; }
 
         .chat-header {
-            padding: 10px 20px; background: #202c33;
-            display: flex; align-items: center; gap: 15px;
-            border-bottom: 1px solid rgba(0,0,0,0.2);
+            padding: 10px 20px; background: #202c33; display: flex; align-items: center; gap: 15px;
         }
 
-        .back-btn { display: block; width: auto; padding: 5px; font-size: 20px; margin: 0; background: transparent; }
-        @media (min-width: 768px) { .back-btn { display: none; } }
-
         .messages-container {
-            flex: 1; padding: 20px; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 10px;
+            flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
         }
 
         .msg {
             max-width: 80%; padding: 10px 14px; border-radius: 12px;
-            position: relative; font-size: 15px; line-height: 1.5; word-wrap: break-word;
-            animation: fadeIn 0.3s ease;
+            position: relative; word-wrap: break-word; font-size: 15px;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         .msg.me { background: var(--msg-me); align-self: flex-end; border-top-left-radius: 0; }
         .msg.other { background: var(--msg-other); align-self: flex-start; border-top-right-radius: 0; }
-        .msg-sender { font-size: 11px; color: var(--primary); font-weight: bold; display: block; margin-bottom: 4px; }
-        .msg-time { font-size: 10px; color: var(--text-gray); float: left; margin-top: 5px; margin-right: 5px; }
+        
+        .msg-sender { font-size: 11px; color: #00ffcc; font-weight: bold; display: block; margin-bottom: 4px; }
         .msg-img { max-width: 100%; border-radius: 8px; margin-top: 5px; cursor: pointer; }
 
-        /* Input Area */
         .input-area {
-            padding: 10px; background: #202c33;
-            display: flex; align-items: center; gap: 10px; position: relative;
+            padding: 10px; background: #202c33; display: flex; align-items: center; gap: 10px;
         }
         .icon-btn {
-            background: transparent; color: var(--text-gray);
-            width: 45px; height: 45px; padding: 0; font-size: 20px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
+            background: transparent; width: 45px; height: 45px; padding: 0; font-size: 20px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; margin: 0; border: none;
         }
-        .icon-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-light); }
-
-        /* Recording UI */
-        .recording-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #202c33; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 15px; z-index: 10;
-        }
-        .rec-indicator {
-            color: var(--record-red); font-weight: bold;
-            display: flex; align-items: center; gap: 10px; animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         /* Modals */
         .modal {
@@ -172,40 +128,30 @@
             background: #202c33; padding: 25px; border-radius: 15px;
             width: 90%; max-width: 400px; text-align: center;
         }
-
-        /* Radio Buttons for Room Type */
-        .room-type-selector { display: flex; gap: 15px; margin: 15px 0; justify-content: center; }
-        .room-type-label { 
-            display: flex; align-items: center; gap: 5px; cursor: pointer; 
-            padding: 10px; border: 1px solid #333; border-radius: 8px; flex: 1; justify-content: center;
+        
+        /* Recording */
+        .recording-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #202c33; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; z-index: 10;
         }
-        input[type="radio"]:checked + span { color: var(--primary); font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div id="auth-screen" class="full-screen">
-        <div style="font-size: 60px; margin-bottom: 20px;">🔐</div>
-        <h2>تطبيق العائلة</h2>
-        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
-            <div class="avatar" onclick="selectAvatar('👨‍💻')">👨‍💻</div>
-            <div class="avatar" onclick="selectAvatar('🧕')">🧕</div>
-            <div class="avatar" onclick="selectAvatar('🤵')">🤵</div>
-            <div class="avatar" onclick="selectAvatar('🦸‍♂️')">🦸‍♂️</div>
-        </div>
-        <input type="hidden" id="selectedAvatar" value="👤">
-        <input type="text" id="usernameInput" placeholder="اسم المستخدم (English)">
-        <button onclick="checkAndLogin()">دخول</button>
+        <div style="font-size: 50px; margin-bottom: 20px;">🕵️‍♂️</div>
+        <h2>Chat Secure</h2>
+        <p style="color: gray;">تشفير كامل: الاسم والرسائل</p>
+        <input type="text" id="usernameInput" placeholder="اسمك المستعار">
+        <button onclick="login()">دخول</button>
     </div>
 
     <div id="app-dashboard" class="app-container hidden">
         <div id="sidebar" class="sidebar">
             <div class="sidebar-header">
-                <div class="user-profile">
-                    <div class="avatar" id="myAvatarDisplay">👤</div>
-                    <span id="myNameDisplay" style="font-weight: bold;"></span>
-                </div>
-                <button class="icon-btn" onclick="openCreateRoomModal()"><i class="fas fa-plus"></i></button>
+                <span id="myNameDisplay" style="font-weight: bold;"></span>
+                <button class="icon-btn" onclick="document.getElementById('createRoomModal').classList.remove('hidden')"><i class="fas fa-plus"></i></button>
             </div>
             <div class="rooms-list" id="roomsList">
                 <p style="text-align: center; padding: 20px; color: gray;">جاري تحميل الغرف...</p>
@@ -214,69 +160,55 @@
 
         <div id="chatArea" class="chat-area hidden">
             <div class="chat-header">
-                <button class="back-btn" onclick="goBackToRooms()"><i class="fas fa-arrow-right"></i></button>
-                <div class="avatar" style="background: var(--secondary);"><i class="fas fa-users"></i></div>
-                <div>
-                    <div id="currentRoomName" style="font-weight: bold;">Room</div>
-                    <div style="font-size: 12px; color: var(--text-gray);">Online Encrypted Chat 🔒</div>
-                </div>
+                <button class="icon-btn" onclick="exitRoom()" style="font-size: 16px;"><i class="fas fa-arrow-right"></i></button>
+                <div id="currentRoomName" style="font-weight: bold;">Room</div>
             </div>
             <div id="messagesContainer" class="messages-container"></div>
-            <div class="input-area">
+            
+            <div class="input-area" style="position: relative;">
                 <div id="recordingUI" class="recording-overlay hidden">
-                    <div class="rec-indicator"><i class="fas fa-microphone"></i> <span id="recTimer">00:00</span></div>
-                    <button class="icon-btn" onclick="cancelRecording()" style="color: var(--delete-red);"><i class="fas fa-trash"></i></button>
-                    <button class="icon-btn" onclick="stopAndSendRecording()" style="color: var(--primary);"><i class="fas fa-paper-plane"></i></button>
+                    <span style="color: red;">Recording... <span id="recTimer">00:00</span></span>
+                    <button class="icon-btn" onclick="stopRecording(true)"><i class="fas fa-paper-plane"></i></button>
+                    <button class="icon-btn" onclick="stopRecording(false)"><i class="fas fa-trash"></i></button>
                 </div>
-                <label for="imageInput" class="icon-btn"><i class="fas fa-camera"></i></label>
-                <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageSelect(this)">
-                <input type="text" id="msgInput" placeholder="اكتب رسالة...">
-                <button class="icon-btn" id="recordBtn" onclick="startRecording()"><i class="fas fa-microphone"></i></button>
-                <button class="icon-btn" onclick="sendMsg()" style="color: var(--primary);"><i class="fas fa-paper-plane"></i></button>
+
+                <label class="icon-btn"><i class="fas fa-camera"></i><input type="file" id="imgInput" hidden onchange="sendImage(this)"></label>
+                <input type="text" id="msgInput" placeholder="رسالة مشفرة...">
+                <button class="icon-btn" onclick="startRecording()"><i class="fas fa-microphone"></i></button>
+                <button class="icon-btn" onclick="sendText()"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
 
-        <div id="emptyState" class="chat-area" style="justify-content: center; align-items: center; text-align: center; color: var(--text-gray);">
-            <i class="fas fa-comments" style="font-size: 50px; margin-bottom: 20px;"></i>
+        <div id="emptyState" class="chat-area" style="justify-content: center; align-items: center; color: gray;">
             <h3>اختر غرفة للبدء</h3>
         </div>
     </div>
 
     <div id="createRoomModal" class="modal hidden">
         <div class="modal-content">
-            <h3>إنشاء غرفة جديدة</h3>
+            <h3>غرفة جديدة</h3>
             <input type="text" id="newRoomName" placeholder="اسم الغرفة">
-            
-            <div class="room-type-selector">
-                <label class="room-type-label">
-                    <input type="radio" name="roomType" value="public" checked onchange="togglePasswordInput(false)">
-                    <span>🌍 عامة</span>
-                </label>
-                <label class="room-type-label">
-                    <input type="radio" name="roomType" value="private" onchange="togglePasswordInput(true)">
-                    <span>🔒 خاصة</span>
-                </label>
-            </div>
-
-            <input type="password" id="newRoomPass" placeholder="كلمة السر (للغرف الخاصة)" style="display: none;">
-            
-            <button onclick="createNewRoom()">إنشاء</button>
-            <button onclick="closeModal('createRoomModal')" class="secondary">إلغاء</button>
+            <select id="roomType" style="margin: 10px 0; padding: 10px; width: 100%; border-radius: 10px; background: #2a3942; color: white;">
+                <option value="public">🌍 عامة</option>
+                <option value="private">🔒 خاصة</option>
+            </select>
+            <input type="password" id="newRoomPass" placeholder="كلمة السر (للخاصة فقط)">
+            <button onclick="createRoom()">إنشاء</button>
+            <button onclick="document.getElementById('createRoomModal').classList.add('hidden')" class="secondary">إلغاء</button>
         </div>
     </div>
 
-    <div id="passwordModal" class="modal hidden">
+    <div id="passModal" class="modal hidden">
         <div class="modal-content">
             <h3>🔒 غرفة خاصة</h3>
-            <p>أدخل كلمة السر للدخول</p>
-            <input type="password" id="joinRoomPass" placeholder="كلمة السر">
-            <button onclick="verifyAndJoin()">دخول</button>
-            <button onclick="closeModal('passwordModal')" class="secondary">إلغاء</button>
+            <input type="password" id="joinPass" placeholder="أدخل كلمة السر">
+            <button onclick="joinPrivateRoom()">دخول</button>
+            <button onclick="document.getElementById('passModal').classList.add('hidden')" class="secondary">إلغاء</button>
         </div>
     </div>
 
     <script>
-        // 1. Firebase Config (بياناتك الصحيحة)
+        // --- تهيئة Firebase ---
         const firebaseConfig = {
           apiKey: "AIzaSyACnX1Xu-2XiyxYtGT_wUzfMqVcUddVxKs",
           authDomain: "chat-9c623.firebaseapp.com",
@@ -287,285 +219,217 @@
           appId: "1:858118572582:web:979ef639fed422a22ff4e7",
           measurementId: "G-THT2B1RYEK"
         };
-
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let currentUser = null;
-        let currentRoom = null;
-        let currentKey = null; // Key for encryption
-        let pendingRoomJoin = null; // Temp storage for room attempting to join
+        let myName = "";
+        let currentRoomId = null;
+        let currentKey = null;
+        let tempRoomData = null;
 
-        // --- Encryption Logic ---
+        // --- التشفير القوي (Full Packet Encryption) ---
         const uint8ToBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
         const base64ToUint8 = (str) => new Uint8Array(atob(str).split('').map(c => c.charCodeAt(0)));
 
-        async function encryptData(text, password) {
-            try {
-                const encoder = new TextEncoder();
-                const salt = crypto.getRandomValues(new Uint8Array(16));
-                const iv = crypto.getRandomValues(new Uint8Array(12));
-                const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
-                const aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["encrypt"]);
-                const encrypted = await crypto.subtle.encrypt({name: "AES-GCM", iv}, aesKey, encoder.encode(text));
-                const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
-                result.set(salt, 0); result.set(iv, salt.length); result.set(new Uint8Array(encrypted), salt.length + iv.length);
-                return uint8ToBase64(result);
-            } catch (e) { return null; }
+        async function encryptPacket(dataObj, password) {
+            const jsonStr = JSON.stringify(dataObj);
+            const enc = new TextEncoder();
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const keyMat = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]);
+            const key = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMat, {name: "AES-GCM", length: 256}, false, ["encrypt"]);
+            const encrypted = await crypto.subtle.encrypt({name: "AES-GCM", iv}, key, enc.encode(jsonStr));
+            
+            const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+            combined.set(salt); combined.set(iv, salt.length); combined.set(new Uint8Array(encrypted), salt.length + iv.length);
+            return uint8ToBase64(combined); // يرجع نص مشفر يشبه الروابط
         }
 
-        async function decryptData(cipherB64, password) {
+        async function decryptPacket(cipherStr, password) {
             try {
-                const bytes = base64ToUint8(cipherB64);
-                const salt = bytes.slice(0, 16); 
-                const iv = bytes.slice(16, 28); 
+                const bytes = base64ToUint8(cipherStr);
+                const salt = bytes.slice(0, 16);
+                const iv = bytes.slice(16, 28);
                 const data = bytes.slice(28);
-                const encoder = new TextEncoder();
-                const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
-                const aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
-                const decrypted = await crypto.subtle.decrypt({name: "AES-GCM", iv}, aesKey, data);
-                return new TextDecoder().decode(decrypted);
-            } catch (e) { return "🔒 [مشفر]"; }
+                const enc = new TextEncoder();
+                const keyMat = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]);
+                const key = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMat, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
+                const decrypted = await crypto.subtle.decrypt({name: "AES-GCM", iv}, key, data);
+                return JSON.parse(new TextDecoder().decode(decrypted));
+            } catch(e) { return null; }
         }
 
-        // --- Login ---
-        function selectAvatar(emoji) {
-            document.getElementById('selectedAvatar').value = emoji;
-            document.querySelectorAll('#auth-screen .avatar').forEach(el => el.style.border = "none");
-            event.target.style.border = "2px solid #00a884";
-        }
-
-        async function checkAndLogin() {
-            const username = document.getElementById('usernameInput').value.trim();
-            const avatar = document.getElementById('selectedAvatar').value;
-            
-            // تحقق بسيط من الاسم
-            if (username.length < 3) return alert("الاسم قصير جداً");
-            
-            // حفظ المستخدم
-            const userRef = db.ref('users/' + username);
-            await userRef.update({
-                username: username,
-                avatar: avatar,
-                status: 'online',
-                lastSeen: Date.now()
-            });
-
-            currentUser = { username, avatar };
-            
+        // --- النظام ---
+        function login() {
+            const name = document.getElementById('usernameInput').value.trim();
+            if(name.length < 3) return alert("الاسم قصير");
+            myName = name;
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('app-dashboard').classList.remove('hidden');
-            document.getElementById('myNameDisplay').innerText = username;
-            document.getElementById('myAvatarDisplay').innerText = avatar;
-            
-            listenToRooms();
+            document.getElementById('myNameDisplay').innerText = name;
+            loadRooms();
         }
 
-        // --- Room Management (Cloud) ---
-        function listenToRooms() {
-            const list = document.getElementById('roomsList');
-            // استمع للتغييرات في عقدة "rooms"
-            db.ref('rooms').on('value', (snapshot) => {
+        function loadRooms() {
+            db.ref('rooms').on('value', snapshot => {
+                const list = document.getElementById('roomsList');
                 list.innerHTML = "";
                 const rooms = snapshot.val();
+                if(!rooms) return list.innerHTML = "<p style='text-align:center'>لا توجد غرف</p>";
                 
-                if (!rooms) {
-                    list.innerHTML = `<p style="text-align: center; color: var(--text-gray); padding: 20px;">لا توجد غرف متاحة</p>`;
-                    return;
-                }
-
-                Object.keys(rooms).forEach(roomId => {
-                    const room = rooms[roomId];
-                    const item = document.createElement('div');
-                    item.className = 'room-item';
-                    const icon = room.type === 'private' ? '🔒' : '🌍';
-                    
-                    item.innerHTML = `
-                        <div class="avatar" style="background: #2a3942;">${icon}</div>
-                        <div>
-                            <div style="font-weight: bold;">${room.name}</div>
-                            <div style="font-size: 11px; color: var(--text-gray);">${room.type === 'private' ? 'خاصة' : 'عامة'}</div>
-                        </div>
+                Object.keys(rooms).forEach(key => {
+                    const r = rooms[key];
+                    const div = document.createElement('div');
+                    div.className = 'room-item';
+                    div.innerHTML = `
+                        <div style="font-size:20px">${r.type=='private'?'🔒':'🌍'}</div>
+                        <div><b>${r.name}</b><br><small>${r.type}</small></div>
                     `;
-                    item.onclick = () => tryJoinRoom(roomId, room);
-                    list.appendChild(item);
+                    div.onclick = () => checkRoom(key, r);
+                    list.appendChild(div);
                 });
             });
         }
 
-        function openCreateRoomModal() {
-            document.getElementById('createRoomModal').classList.remove('hidden');
-        }
+        function createRoom() {
+            const name = document.getElementById('newRoomName').value;
+            const type = document.getElementById('roomType').value;
+            const pass = document.getElementById('newRoomPass').value;
+            
+            if(!name) return;
+            if(type === 'private' && !pass) return alert("مطلوب كلمة سر للغرفة الخاصة");
 
-        function togglePasswordInput(show) {
-            document.getElementById('newRoomPass').style.display = show ? 'block' : 'none';
-        }
-
-        function createNewRoom() {
-            const name = document.getElementById('newRoomName').value.trim();
-            const type = document.querySelector('input[name="roomType"]:checked').value;
-            let password = document.getElementById('newRoomPass').value;
-
-            if (!name) return alert("الرجاء كتابة اسم الغرفة");
-            if (type === 'private' && !password) return alert("يجب وضع كلمة سر للغرفة الخاصة");
-            if (type === 'public') password = "PUBLIC_SHARED_KEY"; // مفتاح موحد للغرف العامة
-
-            // حفظ الغرفة في Firebase
-            const roomId = name.replace(/[^a-zA-Z0-9]/g, ''); // تنظيف الاسم ليصبح ID
-            db.ref('rooms/' + roomId).set({
+            const finalPass = type === 'public' ? 'PUBLIC_KEY' : pass;
+            db.ref('rooms').push({
                 name: name,
                 type: type,
-                password: password, // في تطبيق حقيقي لا نحفظ كلمة السر هكذا، لكن للتعلم هذا مقبول
-                createdBy: currentUser.username
+                password: finalPass // يتم حفظها للتبسيط (في تطبيق حقيقي يتم حفظ الهاش فقط)
             });
-
-            closeModal('createRoomModal');
+            document.getElementById('createRoomModal').classList.add('hidden');
         }
 
-        function tryJoinRoom(roomId, roomData) {
-            if (roomData.type === 'public') {
-                openRoom(roomId, roomData.name, "PUBLIC_SHARED_KEY");
+        function checkRoom(id, room) {
+            if(room.type === 'public') {
+                enterRoom(id, room.name, 'PUBLIC_KEY');
             } else {
-                // غرفة خاصة، اطلب كلمة السر
-                pendingRoomJoin = { id: roomId, name: roomData.name, correctPass: roomData.password };
-                document.getElementById('joinRoomPass').value = "";
-                document.getElementById('passwordModal').classList.remove('hidden');
+                tempRoomData = {id, room};
+                document.getElementById('passModal').classList.remove('hidden');
             }
         }
 
-        function verifyAndJoin() {
-            const inputPass = document.getElementById('joinRoomPass').value;
-            if (inputPass === pendingRoomJoin.correctPass) {
-                openRoom(pendingRoomJoin.id, pendingRoomJoin.name, inputPass);
-                closeModal('passwordModal');
+        function joinPrivateRoom() {
+            const pass = document.getElementById('joinPass').value;
+            if(pass === tempRoomData.room.password) {
+                enterRoom(tempRoomData.id, tempRoomData.room.name, pass);
+                document.getElementById('passModal').classList.add('hidden');
             } else {
-                alert("كلمة السر خاطئة!");
+                alert("كلمة السر خطأ");
             }
         }
 
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        // --- Chat Logic ---
-        function openRoom(roomId, roomName, key) {
-            currentRoom = roomId;
+        function enterRoom(id, name, key) {
+            currentRoomId = id;
             currentKey = key;
-            
-            document.getElementById('currentRoomName').innerText = roomName;
+            document.getElementById('currentRoomName').innerText = name;
             document.getElementById('emptyState').classList.add('hidden');
             document.getElementById('chatArea').classList.remove('hidden');
             if(window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
-
-            // تحميل الرسائل
-            const container = document.getElementById('messagesContainer');
-            container.innerHTML = "";
-            db.ref('messages/' + roomId).off(); // إيقاف الاستماع القديم
             
-            db.ref('messages/' + roomId).limitToLast(50).on('child_added', async (snapshot) => {
-                const msg = snapshot.val();
-                const decrypted = await decryptData(msg.cipher, currentKey);
-                
-                const div = document.createElement('div');
-                div.className = `msg ${msg.sender === currentUser.username ? 'me' : 'other'}`;
-                
-                let content = `<span class="msg-sender">${msg.sender}</span>`;
-                
-                if (decrypted.startsWith('data:image')) {
-                    content += `<img src="${decrypted}" class="msg-img" onclick="window.open(this.src)">`;
-                } else if (decrypted.startsWith('data:audio')) {
-                    content += `<audio controls src="${decrypted}"></audio>`;
-                } else {
-                    content += `<span>${decrypted}</span>`;
-                }
-                
-                const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                content += `<div class="msg-time">${time}</div>`;
-                
-                div.innerHTML = content;
-                container.appendChild(div);
-                container.scrollTop = container.scrollHeight;
-            });
+            loadMessages();
         }
 
-        function goBackToRooms() {
+        function exitRoom() {
             document.getElementById('chatArea').classList.add('hidden');
             document.getElementById('sidebar').classList.remove('hidden');
+            db.ref('messages/' + currentRoomId).off();
+            currentRoomId = null;
         }
 
-        async function sendMsg() {
-            const input = document.getElementById('msgInput');
-            const text = input.value.trim();
-            if(!text) return;
-            
-            const encrypted = await encryptData(text, currentKey);
-            db.ref('messages/' + currentRoom).push({
-                sender: currentUser.username,
-                cipher: encrypted,
-                timestamp: Date.now()
-            });
-            input.value = "";
-        }
+        // --- الرسائل ---
+        function loadMessages() {
+            const container = document.getElementById('messagesContainer');
+            container.innerHTML = "";
+            db.ref('messages/' + currentRoomId).limitToLast(50).on('child_added', async snapshot => {
+                const encryptedData = snapshot.val().data; // لاحظ: نأخذ الحقل data فقط
+                const packet = await decryptPacket(encryptedData, currentKey);
+                
+                if(packet) {
+                    const div = document.createElement('div');
+                    div.className = `msg ${packet.sender === myName ? 'me' : 'other'}`;
+                    
+                    let content = `<span class="msg-sender">${packet.sender}</span>`;
+                    
+                    if(packet.type === 'text') content += `<span>${packet.content}</span>`;
+                    else if(packet.type === 'image') content += `<img src="${packet.content}" class="msg-img" onclick="window.open(this.src)">`;
+                    else if(packet.type === 'audio') content += `<audio controls src="${packet.content}"></audio>`;
 
-        // --- Multimedia ---
-        function handleImageSelect(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = async function() {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        const maxWidth = 500; 
-                        const scaleSize = maxWidth / img.width;
-                        canvas.width = maxWidth;
-                        canvas.height = img.height * scaleSize;
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        const base64String = canvas.toDataURL('image/jpeg', 0.5);
-                        const encrypted = await encryptData(base64String, currentKey);
-                        db.ref('messages/' + currentRoom).push({ sender: currentUser.username, cipher: encrypted, timestamp: Date.now() });
-                    }
+                    div.innerHTML = content;
+                    container.appendChild(div);
+                    container.scrollTop = container.scrollHeight;
                 }
+            });
+        }
+
+        async function sendPacket(content, type) {
+            // هنا السحر: نجمع كل شيء في حزمة واحدة
+            const packet = {
+                sender: myName, // الاسم يوضع هنا داخل التشفير
+                content: content,
+                type: type,
+                timestamp: Date.now()
+            };
+            
+            // نشفر الحزمة بالكامل
+            const encryptedString = await encryptPacket(packet, currentKey);
+            
+            // نرسل الحزمة المشفرة فقط
+            db.ref('messages/' + currentRoomId).push({
+                data: encryptedString
+            });
+        }
+
+        function sendText() {
+            const inp = document.getElementById('msgInput');
+            if(inp.value.trim()) {
+                sendPacket(inp.value, 'text');
+                inp.value = "";
+            }
+        }
+
+        function sendImage(input) {
+            if(input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => sendPacket(e.target.result, 'image');
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // --- Recording ---
-        let mediaRecorder, audioChunks, recInterval, recSeconds;
-
+        // --- التسجيل ---
+        let recorder, chunks;
         async function startRecording() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                
-                mediaRecorder.onstop = async () => {
-                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                    const reader = new FileReader();
-                    reader.readAsDataURL(blob);
-                    reader.onloadend = async () => {
-                        const encrypted = await encryptData(reader.result, currentKey);
-                        if(encrypted) db.ref('messages/' + currentRoom).push({ sender: currentUser.username, cipher: encrypted, timestamp: Date.now() });
-                    };
-                    clearInterval(recInterval);
-                    document.getElementById('recordingUI').classList.add('hidden');
-                };
-
-                mediaRecorder.start();
+                const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+                recorder = new MediaRecorder(stream);
+                chunks = [];
+                recorder.ondataavailable = e => chunks.push(e.data);
+                recorder.start();
                 document.getElementById('recordingUI').classList.remove('hidden');
-                recSeconds = 0;
-                recInterval = setInterval(() => {
-                    recSeconds++;
-                    document.getElementById('recTimer').innerText = `00:${recSeconds.toString().padStart(2,'0')}`;
-                }, 1000);
-            } catch (e) { alert("الميكروفون مطلوب"); }
+            } catch(e) { alert("المايكروفون مطلوب"); }
         }
 
-        function stopAndSendRecording() { if(mediaRecorder) mediaRecorder.stop(); }
-        function cancelRecording() { 
-            if(mediaRecorder) { mediaRecorder.onstop = null; mediaRecorder.stop(); }
-            clearInterval(recInterval);
-            document.getElementById('recordingUI').classList.add('hidden');
+        function stopRecording(send) {
+            if(recorder) {
+                recorder.onstop = () => {
+                    if(send) {
+                        const blob = new Blob(chunks, {type:'audio/webm'});
+                        const reader = new FileReader();
+                        reader.onload = e => sendPacket(e.target.result, 'audio');
+                        reader.readAsDataURL(blob);
+                    }
+                    document.getElementById('recordingUI').classList.add('hidden');
+                };
+                recorder.stop();
+            }
         }
     </script>
 </body>
