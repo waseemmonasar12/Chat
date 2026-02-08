@@ -13,12 +13,11 @@
         :root {
             --primary: #00a884;
             --secondary: #005c4b;
-            --bg-glass: rgba(10, 20, 30, 0.85);
+            --bg-glass: rgba(10, 20, 30, 0.85); /* خلفية داكنة وشفافة */
             --msg-me: #005c4b;
             --msg-other: #202c33;
             --text-light: #e9edef;
             --text-gray: #cfd8dc;
-            --delete-red: #ff4d4d;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -26,17 +25,20 @@
         body {
             font-family: 'Cairo', sans-serif;
             margin: 0; height: 100vh; overflow: hidden;
+            /* الخلفية المطلوبة */
             background-image: url('https://raw.githubusercontent.com/waseemmonasar12/Chat/f0981b25071c7ed7b1471a094327f9dea9e401fc/Aobida.jpeg'); 
             background-size: cover; background-position: center;
             color: var(--text-light);
             display: flex; justify-content: center; align-items: center;
         }
 
+        /* تعتيم الخلفية لبروز النصوص */
         body::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.4); z-index: -1; backdrop-filter: blur(3px);
         }
 
+        /* الحاوية الرئيسية */
         .app-container {
             width: 100%; height: 100%; max-width: 1400px;
             background: var(--bg-glass);
@@ -48,6 +50,7 @@
             .app-container { height: 90vh; border-radius: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
         }
 
+        /* شاشة الدخول */
         .full-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.9); z-index: 100;
@@ -67,6 +70,7 @@
         button { background: var(--primary); border: none; font-weight: bold; cursor: pointer; }
         button:hover { background: #008f6f; }
 
+        /* القائمة الجانبية */
         .sidebar {
             width: 100%; height: 100%;
             display: flex; flex-direction: column;
@@ -85,6 +89,7 @@
             display: flex; justify-content: space-between; align-items: center;
         }
 
+        /* صورة البروفايل */
         .avatar-img {
             width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
             border: 2px solid var(--primary);
@@ -94,6 +99,7 @@
             display: flex; align-items: center; justify-content: center; font-size: 20px;
         }
 
+        /* التبويبات والبحث */
         .tabs { display: flex; background: rgba(0,0,0,0.2); }
         .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; color: #aaa; border-bottom: 3px solid transparent; }
         .tab.active { color: var(--primary); border-bottom: 3px solid var(--primary); font-weight: bold; }
@@ -107,11 +113,12 @@
         }
         .item-card:hover { background: rgba(255,255,255,0.1); }
 
+        /* منطقة الشات */
         .chat-area { 
             flex: 1; display: flex; flex-direction: column; background: transparent; 
             width: 100%; height: 100%; position: absolute; z-index: 20;
-            background: rgba(10, 20, 30, 0.95);
-            transform: translateX(-100%);
+            background: rgba(10, 20, 30, 0.95); /* خلفية الشات لعدم التداخل في الموبايل */
+            transform: translateX(-100%); /* مخفي في البداية للموبايل */
             transition: transform 0.3s ease;
         }
 
@@ -119,155 +126,12 @@
             .chat-area { position: relative; transform: none !important; background: transparent; }
         }
 
+        /* عند فتح الشات في الموبايل */
         .chat-active .chat-area { transform: translateX(0); }
-        .chat-active .sidebar { display: none; }
-        @media (min-width: 768بالتأكيد! سأقوم **بدمج جميع التعديلات المطلوبة** في كود HTML الكامل الذي أرسلته، مع الحرص على:
-
-- ✅ جعله يعمل فورًا بدون أخطاء.
-- ✅ الحفاظ على التصميم واللغة العربية (RTL).
-- ✅ توثيق الأجزاء المهمة بتعليقات بسيطة.
-- ✅ التأكد من أن نظام كلمة المرور + الرسائل غير المقروءة يعمل بشكل متكامل.
-
----
-
-### ✅ ما تم إضافته/تعديله:
-1. **حقل كلمة المرور** في شاشة الدخول.
-2. **تشفير كلمة المرور** باستخدام SHA-256 وتخزينها في قاعدة البيانات.
-3. **منع الدخول بدون كلمة مرور صحيحة**.
-4. **نظام عدّ الرسائل غير المقروءة** لكل محادثة (غرف + دردشات مباشرة).
-5. **عرض شارة حمراء** بجانب المحادثة إذا كانت هناك رسائل جديدة.
-6. **إخفاء الشارة تلقائيًا** عند فتح المحادثة.
-
----
-
-### 📄 الكود الكامل المعدّل (جاهز للنسخ والاستخدام):
-
-```html
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chat Secure 🔐</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --primary: #00a884;
-            --secondary: #005c4b;
-            --bg-glass: rgba(10, 20, 30, 0.85);
-            --msg-me: #005c4b;
-            --msg-other: #202c33;
-            --text-light: #e9edef;
-            --text-gray: #cfd8dc;
-            --delete-red: #ff4d4d;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        .chat-active .sidebar { display: none; } /* إخفاء السايدبار في الموبايل عند فتح الشات */
         
-        body {
-            font-family: 'Cairo', sans-serif;
-            margin: 0; height: 100vh; overflow: hidden;
-            background-image: url('https://raw.githubusercontent.com/waseemmonasar12/Chat/f0981b25071c7ed7b1471a094327f9dea9e401fc/Aobida.jpeg'); 
-            background-size: cover; background-position: center;
-            color: var(--text-light);
-            display: flex; justify-content: center; align-items: center;
-        }
-
-        body::before {
-            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.4); z-index: -1; backdrop-filter: blur(3px);
-        }
-
-        .app-container {
-            width: 100%; height: 100%; max-width: 1400px;
-            background: var(--bg-glass);
-            display: flex; position: relative; overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
         @media (min-width: 768px) {
-            .app-container { height: 90vh; border-radius: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
-        }
-
-        .full-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9); z-index: 100;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center;
-        }
-
-        .hidden { display: none !important; }
-
-        input, button, textarea {
-            width: 100%; padding: 15px; margin: 10px 0;
-            border-radius: 10px; border: 1px solid #444;
-            background: rgba(40, 50, 60, 0.8); color: white; outline: none;
-            font-family: 'Cairo', sans-serif; font-size: 16px;
-        }
-
-        button { background: var(--primary); border: none; font-weight: bold; cursor: pointer; }
-        button:hover { background: #008f6f; }
-
-        .sidebar {
-            width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            border-left: 1px solid rgba(255,255,255,0.1);
-            background: rgba(17, 27, 33, 0.8);
-            transition: transform 0.3s ease;
-            position: absolute; z-index: 10;
-        }
-        
-        @media (min-width: 768px) { 
-            .sidebar { width: 380px; position: relative; transform: none !important; } 
-        }
-
-        .sidebar-header {
-            padding: 15px; background: rgba(32, 44, 51, 0.9); 
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .avatar-img {
-            width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
-            border: 2px solid var(--primary);
-        }
-        .default-avatar {
-            width: 40px; height: 40px; border-radius: 50%; background: #555;
-            display: flex; align-items: center; justify-content: center; font-size: 20px;
-        }
-
-        .tabs { display: flex; background: rgba(0,0,0,0.2); }
-        .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; color: #aaa; border-bottom: 3px solid transparent; }
-        .tab.active { color: var(--primary); border-bottom: 3px solid var(--primary); font-weight: bold; }
-        
-        .list-container { flex: 1; overflow-y: auto; padding: 10px; }
-
-        .item-card {
-            padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer;
-            display: flex; align-items: center; gap: 15px; border-radius: 8px;
-            transition: 0.2s;
-        }
-        .item-card:hover { background: rgba(255,255,255,0.1); }
-
-        .chat-area { 
-            flex: 1; display: flex; flex-direction: column; background: transparent; 
-            width: 100%; height: 100%; position: absolute; z-index: 20;
-            background: rgba(10, 20, 30, 0.95);
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-        }
-
-        @media (min-width: 768px) {
-            .chat-area { position: relative; transform: none !important; background: transparent; }
-        }
-
-        .chat-active .chat-area { transform: translateX(0); }
-        .chat-active .sidebar { display: none; }
-        @media (min-width: 768px) {
-            .chat-active .sidebar { display: flex; }
+            .chat-active .sidebar { display: flex; } /* إعادته في الديسكتوب */
         }
 
         .chat-header {
@@ -286,6 +150,7 @@
         .msg.other { background: var(--msg-other); align-self: flex-start; border-top-right-radius: 0; }
         .msg-sender { font-size: 11px; color: #00ffcc; font-weight: bold; display: block; margin-bottom: 3px; }
 
+        /* منطقة الإدخال */
         .input-area { padding: 10px; background: rgba(32, 44, 51, 0.95); display: flex; align-items: center; gap: 8px; }
         .icon-btn {
             background: transparent; width: 40px; height: 40px; border: none; font-size: 18px; color: #ccc;
@@ -293,11 +158,13 @@
         }
         .icon-btn:hover { background: rgba(255,255,255,0.1); color: white; }
 
+        /* الحقوق */
         .copyright {
             position: absolute; bottom: 5px; width: 100%; text-align: center;
             font-size: 12px; color: rgba(255,255,255,0.4); pointer-events: none; z-index: 1000;
         }
 
+        /* Modals */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 200;
@@ -308,16 +175,10 @@
             width: 90%; max-width: 400px; text-align: center; border: 1px solid var(--primary);
         }
         
+        /* معاينة صورة البروفايل */
         .profile-preview {
             width: 100px; height: 100px; border-radius: 50%; object-fit: cover;
             margin: 10px auto; border: 3px solid var(--primary); display: block;
-        }
-
-        /* شارة الرسائل غير المقروءة */
-        .unread-badge {
-            background: #ff4d4d; color: white; border-radius: 10px;
-            padding: 2px 6px; font-size: 12px; min-width: 18px;
-            text-align: center; display: none;
         }
     </style>
 </head>
@@ -329,7 +190,6 @@
         <div style="font-size: 60px; margin-bottom: 20px;">🛡️</div>
         <h2>Chat Secure</h2>
         <input type="text" id="usernameInput" placeholder="اسم المستخدم">
-        <input type="password" id="passwordInput" placeholder="كلمة المرور (4 أحرف فأكثر)">
         <button onclick="checkAndLogin()">تسجيل الدخول</button>
         <p id="loginError" style="color: #f15c6d; font-size: 14px; margin-top: 10px;"></p>
     </div>
@@ -385,7 +245,7 @@
         </div>
 
         <div id="emptyState" class="full-screen" style="z-index: 5; background: transparent; pointer-events: none;">
-        </div>
+            </div>
     </div>
 
     <div id="profileModal" class="modal hidden">
@@ -432,7 +292,7 @@
     </div>
 
     <script>
-        // --- Firebase Config ---
+        // --- 1. Firebase Config ---
         const firebaseConfig = {
           apiKey: "AIzaSyACnX1Xu-2XiyxYtGT_wUzfMqVcUddVxKs",
           authDomain: "chat-9c623.firebaseapp.com",
@@ -450,15 +310,6 @@
         let currentChatId = null;
         let currentKey = null;
         let tempRoomData = null;
-
-        // --- دالة تجزئة كلمة المرور (SHA-256) ---
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
 
         // --- التشفير ---
         const uint8ToBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
@@ -489,47 +340,25 @@
             } catch(e) { return null; }
         }
 
-        // --- تسجيل الدخول ---
-        if(myName) {
-            // نعيد التوجيه لشاشة الدخول لأننا نحتاج كلمة المرور كل مرة (لأمان أكثر)
-            // أو يمكنك حفظ الهاش في localStorage — لكننا نطلب إعادة الإدخال لأمان أفضل
-            document.getElementById('auth-screen').classList.remove('hidden');
-        }
+        // --- الدخول والبروفايل ---
+        if(myName) initApp();
 
         async function checkAndLogin() {
             const name = document.getElementById('usernameInput').value.trim();
-            const pass = document.getElementById('passwordInput').value;
-            const errorEl = document.getElementById('loginError');
-
-            if (name.length < 3 || pass.length < 4) {
-                errorEl.textContent = "الاسم (3+ أحرف) وكلمة المرور (4+ أحرف) مطلوبان";
-                return;
-            }
-
-            const hashedPass = await hashPassword(pass);
-            const userRef = db.ref('users/' + name);
-            const snapshot = await userRef.once('value');
-
+            if(name.length < 3) return;
+            
+            const snapshot = await db.ref('users/' + name).once('value');
             if (snapshot.exists()) {
-                const userData = snapshot.val();
-                if (userData.passwordHash === hashedPass) {
-                    myName = name;
-                    localStorage.setItem('chatUser', myName);
-                    initApp();
-                } else {
-                    errorEl.textContent = "كلمة المرور غير صحيحة";
-                }
+                // اسم موجود، تسجيل دخول
+                // (في الواقع يجب التحقق من كلمة مرور، لكن للتبسيط سنسمح به)
             } else {
-                await userRef.set({
-                    bio: "متاح",
-                    joinedAt: Date.now(),
-                    passwordHash: hashedPass,
-                    profileImage: null
-                });
-                myName = name;
-                localStorage.setItem('chatUser', myName);
-                initApp();
+                // تسجيل جديد
+                await db.ref('users/' + name).set({ bio: "متاح", joinedAt: Date.now() });
             }
+            
+            myName = name;
+            localStorage.setItem('chatUser', myName);
+            initApp();
         }
 
         function initApp() {
@@ -541,6 +370,7 @@
                 const data = snap.val();
                 document.getElementById('myNameDisplay').innerText = myName;
                 updateAvatarUI('myAvatarImg', 'myDefaultAvatar', data?.profileImage);
+                // تحديث المودال
                 document.getElementById('profileBioInput').value = data?.bio || "";
                 if(data?.profileImage) document.getElementById('previewProfilePic').src = data.profileImage;
             });
@@ -567,8 +397,11 @@
         async function saveProfile() {
             const bio = document.getElementById('profileBioInput').value;
             const imgSrc = document.getElementById('previewProfilePic').src;
+            
+            // ضغط الصورة إذا كانت جديدة
             let finalImg = imgSrc.includes("via.placeholder") ? null : imgSrc;
             
+            // إذا كانت الصورة Base64 طويلة، يفضل ضغطها (تجاوزنا ذلك للتبسيط)
             await db.ref('users/' + myName).update({
                 bio: bio,
                 profileImage: finalImg
@@ -587,7 +420,7 @@
             }
         }
 
-        // --- القوائم ---
+        // --- القوائم (موبايل متجاوب) ---
         function setupListeners() {
             // القروبات
             db.ref('rooms').on('value', snapshot => {
@@ -597,7 +430,7 @@
                 if(data) Object.keys(data).forEach(key => renderRoomItem(key, data[key], list));
             });
 
-            // المستخدمين
+            // المستخدمين (للخاص)
             db.ref('users').on('value', snapshot => {
                 const list = document.getElementById('usersList');
                 list.innerHTML = "";
@@ -608,38 +441,15 @@
                     });
                 }
             });
-
-            // مراقبة الرسائل غير المقروءة
-            db.ref(`unread/${myName}`).on('value', snap => {
-                const unreadData = snap.val() || {};
-                Object.keys(unreadData).forEach(chatId => {
-                    const count = unreadData[chatId];
-                    const badgeEl = document.getElementById(`badge-${chatId}`);
-                    if (badgeEl) {
-                        if (count > 0) {
-                            badgeEl.textContent = count > 99 ? '99+' : count;
-                            badgeEl.style.display = 'inline-block';
-                        } else {
-                            badgeEl.style.display = 'none';
-                        }
-                    }
-                });
-            });
         }
 
         function renderRoomItem(key, r, list) {
             const div = document.createElement('div');
             div.className = 'item-card';
             div.setAttribute('data-name', r.name);
-            div.setAttribute('data-id', key);
-
             div.innerHTML = `
                 <div class="default-avatar" style="background:var(--secondary)">${r.type=='private'?'🔒':'👥'}</div>
-                <div style="flex:1;">
-                    <div style="font-weight:bold">${r.name}</div>
-                    <small style="color:gray">${r.type=='private'?'خاص':'عام'}</small>
-                </div>
-                <span class="unread-badge" id="badge-${key}"></span>
+                <div><div style="font-weight:bold">${r.name}</div><small style="color:gray">${r.type=='private'?'خاص':'عام'}</small></div>
             `;
             div.onclick = () => checkRoom(key, r);
             list.appendChild(div);
@@ -649,18 +459,16 @@
             const div = document.createElement('div');
             div.className = 'item-card';
             div.setAttribute('data-name', key);
-            div.setAttribute('data-id', key);
-
+            
             const hasImg = user.profileImage ? true : false;
             const imgHtml = hasImg ? `<img src="${user.profileImage}" class="avatar-img">` : `<div class="default-avatar">👤</div>`;
-
+            
             div.innerHTML = `
                 ${imgHtml}
-                <div style="flex:1;">
+                <div>
                     <div style="font-weight:bold">${key}</div>
                     <small style="color:#aaa">${user.bio || "متاح"}</small>
                 </div>
-                <span class="unread-badge" id="badge-${key}"></span>
             `;
             div.onclick = () => startDirectChat(key);
             list.appendChild(div);
@@ -674,6 +482,7 @@
 
         function closeChatMobile() {
             document.body.classList.remove('chat-active');
+            // إعادة التهيئه
             if(window.innerWidth >= 768) document.getElementById('emptyState').style.display = 'flex';
         }
 
@@ -711,7 +520,7 @@
             if(document.getElementById('joinPass').value === tempRoomData.room.password) {
                 enterChat(tempRoomData.id, tempRoomData.room.name, tempRoomData.room.password);
                 document.getElementById('passModal').classList.add('hidden');
-            } else alert("كلمة المرور غير صحيحة");
+            } else alert("خطأ");
         }
         
         function startDirectChat(otherUser) {
@@ -723,29 +532,13 @@
             currentChatId = id; currentKey = key;
             document.getElementById('currentRoomName').innerText = title;
             document.getElementById('messagesContainer').innerHTML = "";
-            openChatMobile();
+            openChatMobile(); // تفعيل وضع الشات للموبايل
             
-            // مسح العداد غير المقروء
-            db.ref(`unread/${myName}/${id}`).set(0);
-
             // تحميل الرسائل
             db.ref('messages/' + id).off();
             db.ref('messages/' + id).limitToLast(50).on('child_added', async snap => {
                 const packet = await decryptPacket(snap.val().data, key);
-                if(packet) {
-                    renderMessage(packet);
-                    // إذا لم تكن هذه المحادثة مفتوحة الآن (مهم للمستخدمين الآخرين)، زد العداد
-                    if (id !== currentChatId) {
-                        incrementUnread(id);
-                    }
-                }
-            });
-        }
-
-        function incrementUnread(chatId) {
-            const unreadRef = db.ref(`unread/${myName}/${chatId}`);
-            unreadRef.transaction(current => {
-                return (current || 0) + 1;
+                if(packet) renderMessage(packet);
             });
         }
 
@@ -754,7 +547,7 @@
             div.className = `msg ${packet.sender === myName ? 'me' : 'other'}`;
             let content = `<span class="msg-sender">${packet.sender}</span>`;
             if(packet.type === 'text') content += `<span>${packet.content}</span>`;
-            else if(packet.type === 'image') content += `<img src="${packet.content}" class="msg-img" onclick="window.open(this.src)" style="max-width:200px; border-radius:8px;">`;
+            else if(packet.type === 'image') content += `<img src="${packet.content}" class="msg-img" onclick="window.open(this.src)">`;
             div.innerHTML = content;
             const container = document.getElementById('messagesContainer');
             container.appendChild(div);
