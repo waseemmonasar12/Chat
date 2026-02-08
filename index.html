@@ -28,7 +28,8 @@
             margin: 0;
             height: 100vh;
             overflow: hidden;
-            background-image: url('https://github.com/waseemmonasar12/Chat/blob/f0981b25071c7ed7b1471a094327f9dea9e401fc/Aobida.jpeg'); 
+            /* تم تصحيح رابط الصورة ليعمل بشكل مباشر */
+            background-image: url('https://raw.githubusercontent.com/waseemmonasar12/Chat/f0981b25071c7ed7b1471a094327f9dea9e401fc/Aobida.jpeg'); 
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -197,7 +198,6 @@
             margin-top: 5px;
             border-radius: 20px;
         }
-        /* Custom Audio Player Colors for Webkit */
         audio::-webkit-media-controls-panel { background-color: rgba(255, 255, 255, 0.8); }
 
         /* Input Area */
@@ -342,17 +342,17 @@
     </div>
 
     <script>
-        // --- 1. إعدادات Firebase (ضع بياناتك هنا) ---
+        // --- 1. إعدادات Firebase المصححة ---
         const firebaseConfig = {
-  apiKey: "AIzaSyACnX1Xu-2XiyxYtGT_wUzfMqVcUddVxKs",
-  authDomain: "chat-9c623.firebaseapp.com",
-  databaseURL: "https://chat-9c623-default-rtdb.firebaseio.com",
-  projectId: "chat-9c623",
-  storageBucket: "chat-9c623.firebasestorage.app",
-  messagingSenderId: "858118572582",
-  appId: "1:858118572582:web:979ef639fed422a22ff4e7",
-  measurementId: "G-THT2B1RYEK"
-};
+          apiKey: "AIzaSyACnX1Xu-2XiyxYtGT_wUzfMqVcUddVxKs",
+          authDomain: "chat-9c623.firebaseapp.com",
+          databaseURL: "https://chat-9c623-default-rtdb.firebaseio.com",
+          projectId: "chat-9c623",
+          storageBucket: "chat-9c623.firebasestorage.app",
+          messagingSenderId: "858118572582",
+          appId: "1:858118572582:web:979ef639fed422a22ff4e7",
+          measurementId: "G-THT2B1RYEK"
+        };
 
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -627,34 +627,3 @@
     </script>
 </body>
 </html>
-            encryptionKey = document.getElementById("chatPassword").value;
-            if (myName && encryptionKey) {
-                document.getElementById("login-screen").style.display = "none";
-                listenForMessages();
-            } else { alert("يرجى إدخال الاسم وكلمة السر"); }
-        }
-
-        async function sendEncryptedMessage() {
-            const input = document.getElementById("messageInput");
-            if (input.value.trim() === "") return;
-            const encrypted = await encryptData(input.value, encryptionKey);
-            database.ref("messages").push().set({ sender: myName, text: encrypted });
-            input.value = "";
-        }
-
-        function listenForMessages() {
-            database.ref("messages").on("child_added", async (snapshot) => {
-                const data = snapshot.val();
-                const decryptedText = await decryptData(data.text, encryptionKey);
-                const chatBox = document.getElementById("chatBox");
-                const div = document.createElement("div");
-                div.className = `msg ${data.sender === myName ? 'me' : 'other'}`;
-                div.innerHTML = `<span class="sender">${data.sender}</span>${decryptedText}`;
-                chatBox.appendChild(div);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            });
-        }
-    </script>
-</body>
-</html>
-
