@@ -82,17 +82,22 @@
             return uint8ToBase64(result);
         }
 
-        async function decryptData(cipherB64, password) {
-            try {
-                const bytes = base64ToUint8(cipherB64);
-                const salt = bytes.slice(0, 16); const iv = bytes.slice(16, 28); const data = bytes.slice(28);
-                const encoder = new TextEncoder();
-                const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
-                const aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
-                const decrypted = await crypto.subtle.decrypt({name: "AES-GCM", iv}, aesKey, data);
-                return new TextDecoder().decode(decrypted);
-            } catch (e) { return "🔐 [رسالة مشفرة - كلمة سر خاطئة]"; }
-        }
+ async function decryptData(cipherB64, password) {
+    try {
+        const bytes = base64ToUint8(cipherB64);
+        const salt = bytes.slice(0, 16); 
+        const iv = bytes.slice(16, 28); 
+        const data = bytes.slice(28);
+        const encoder = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
+        const aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
+        const decrypted = await crypto.subtle.decrypt({name: "AES-GCM", iv}, aesKey, data);
+        return new TextDecoder().decode(decrypted);
+    } catch (e) { 
+        return "••••••••••••••••"; 
+    }
+}
+
 
         // --- إدارة التطبيق ---
         function startApp() {
