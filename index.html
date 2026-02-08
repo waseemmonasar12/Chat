@@ -2,55 +2,347 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دردشة العائلة المشفرة 🔐</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تطبيق العائلة المشفر 🔐</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; margin: 0; display: flex; justify-content: center; height: 100vh; }
-        .app-container { width: 100%; max-width: 500px; background: #fff; display: flex; flex-direction: column; height: 100%; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        header { background: #075e54; color: white; padding: 15px; text-align: center; font-size: 1.2em; font-weight: bold; }
+        :root {
+            --primary: #00a884;
+            --secondary: #005c4b;
+            --bg-glass: rgba(20, 30, 48, 0.85);
+            --msg-me: #005c4b;
+            --msg-other: #202c33;
+            --text-light: #e9edef;
+            --text-gray: #8696a0;
+            --record-red: #ea4335;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* واجهة الدخول */
-        #login-screen { padding: 20px; text-align: center; background: white; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; justify-content: center; gap: 15px; }
-        input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
-        button { background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background-image: url('https://raw.githubusercontent.com/waseemmonasar12/Chat/main/%D8%A7%D9%94%D8%A8%D9%88%20%D8%B9%D8%A8%D9%8A%D8%AF%D8%A9.jpeg'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-        /* منطقة الدردشة */
-        .chat-box { flex: 1; padding: 15px; overflow-y: auto; background: #e5ddd5; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 10px; border-radius: 10px; max-width: 80%; font-size: 14px; line-height: 1.4; word-wrap: break-word; }
-        .me { background: #dcf8c6; align-self: flex-end; }
-        .other { background: #fff; align-self: flex-start; }
-        .sender { font-size: 11px; color: #075e54; font-weight: bold; display: block; margin-bottom: 4px; }
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: -1;
+        }
 
-        .input-area { padding: 10px; background: #f0f0f0; display: flex; gap: 8px; }
-        #messageInput { flex: 1; border-radius: 20px; }
+        .app-container {
+            width: 100%;
+            height: 100%;
+            max-width: 1200px;
+            background: var(--bg-glass);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            .app-container {
+                height: 90vh;
+                border-radius: 20px;
+                flex-direction: row;
+                border: 1px solid rgba(255,255,255,0.1);
+            }
+        }
+
+        .full-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(17, 27, 33, 0.98);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            transition: opacity 0.5s;
+        }
+
+        .hidden { display: none !important; }
+
+        input, select, button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: #2a3942;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button {
+            background: var(--primary);
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background: #008f6f; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 100%;
+            background: rgba(17, 27, 33, 0.95);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid rgba(255,255,255,0.1);
+        }
+        @media (min-width: 768px) { .sidebar { width: 350px; } }
+
+        .sidebar-header {
+            padding: 15px;
+            background: #202c33;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-profile { display: flex; align-items: center; gap: 10px; }
+
+        .avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 20px;
+        }
+
+        .rooms-list { flex: 1; overflow-y: auto; padding: 10px; }
+
+        .room-item {
+            padding: 15px;
+            border-bottom: 1px solid #2a3942;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 15px;
+            transition: 0.2s;
+        }
+        .room-item:hover { background: #2a3942; }
+
+        /* Chat Area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: transparent;
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 10px 20px;
+            background: #202c33;
+            display: flex; align-items: center; gap: 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.2);
+        }
+
+        .back-btn {
+            display: block; width: auto; padding: 5px; font-size: 20px; margin: 0; background: transparent;
+        }
+        @media (min-width: 768px) { .back-btn { display: none; } }
+
+        .messages-container {
+            flex: 1; padding: 20px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
+        .msg {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            position: relative;
+            font-size: 15px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .msg.me { background: var(--msg-me); align-self: flex-end; border-top-left-radius: 0; }
+        .msg.other { background: var(--msg-other); align-self: flex-start; border-top-right-radius: 0; }
+
+        .msg-sender { font-size: 11px; color: var(--primary); font-weight: bold; display: block; margin-bottom: 4px; }
+        .msg-time { font-size: 10px; color: var(--text-gray); float: left; margin-top: 5px; margin-right: 5px; }
+        .msg-img { max-width: 100%; border-radius: 8px; margin-top: 5px; cursor: pointer; }
+
+        /* Audio Player Styling */
+        audio {
+            height: 35px;
+            width: 220px;
+            margin-top: 5px;
+            border-radius: 20px;
+        }
+        /* Custom Audio Player Colors for Webkit */
+        audio::-webkit-media-controls-panel { background-color: rgba(255, 255, 255, 0.8); }
+
+        /* Input Area */
+        .input-area {
+            padding: 10px;
+            background: #202c33;
+            display: flex; align-items: center; gap: 10px;
+            position: relative;
+        }
+
+        .icon-btn {
+            background: transparent; color: var(--text-gray);
+            width: 45px; height: 45px; padding: 0;
+            font-size: 20px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .icon-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-light); }
+
+        /* Recording UI */
+        .recording-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #202c33;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px;
+            z-index: 10;
+        }
+        .rec-indicator {
+            color: var(--record-red);
+            font-weight: bold;
+            display: flex; align-items: center; gap: 10px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* Modal */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 200;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #202c33; padding: 25px; border-radius: 15px;
+            width: 90%; max-width: 400px; text-align: center;
+        }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <div id="login-screen">
-            <h2>🔐 دخول آمن</h2>
-            <input type="text" id="username" placeholder="اسمك المستعار">
-            <input type="password" id="chatPassword" placeholder="كلمة سر التشفير (للعائلة فقط)">
-            <p style="font-size: 12px; color: #666;">* كلمة السر هذه هي التي ستفك تشفير الرسائل.</p>
-            <button onclick="startApp()">دخول</button>
+    <div id="auth-screen" class="full-screen">
+        <div style="font-size: 60px; margin-bottom: 20px;">🔐</div>
+        <h2>تطبيق العائلة الآمن</h2>
+        <p style="color: #8696a0; margin-bottom: 20px;">محادثات صوتية وصورية مشفرة</p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+            <div class="avatar" onclick="selectAvatar('👨‍💻')" style="cursor: pointer;">👨‍💻</div>
+            <div class="avatar" onclick="selectAvatar('🧕')" style="cursor: pointer;">🧕</div>
+            <div class="avatar" onclick="selectAvatar('🤵')" style="cursor: pointer;">🤵</div>
+            <div class="avatar" onclick="selectAvatar('🦸‍♂️')" style="cursor: pointer;">🦸‍♂️</div>
+        </div>
+        <input type="hidden" id="selectedAvatar" value="👤">
+
+        <input type="text" id="usernameInput" placeholder="اختر اسمك (English Only)">
+        <button onclick="checkAndLogin()">دخول</button>
+        <div id="loginError" style="color: #f15c6d; margin-top: 10px; display: none;"></div>
+    </div>
+
+    <div id="app-dashboard" class="app-container hidden">
+        
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-profile">
+                    <div class="avatar" id="myAvatarDisplay">👤</div>
+                    <span id="myNameDisplay" style="font-weight: bold;"></span>
+                </div>
+                <button class="icon-btn" onclick="showCreateRoomModal()" title="غرفة جديدة"><i class="fas fa-plus"></i></button>
+            </div>
+            
+            <div class="rooms-list" id="roomsList">
+                <p style="text-align: center; color: var(--text-gray); padding: 20px;">لا توجد غرف.</p>
+            </div>
         </div>
 
-        <header>مجموعة العائلة المشفرة</header>
+        <div id="chatArea" class="chat-area hidden">
+            <div class="chat-header">
+                <button class="back-btn" onclick="goBackToRooms()"><i class="fas fa-arrow-right"></i></button>
+                <div class="avatar" style="background: var(--secondary);"><i class="fas fa-users"></i></div>
+                <div>
+                    <div id="currentRoomName" style="font-weight: bold;">Room</div>
+                    <div style="font-size: 12px; color: var(--text-gray);">Messages encrypted 🔒</div>
+                </div>
+            </div>
 
-        <div class="chat-box" id="chatBox"></div>
+            <div id="messagesContainer" class="messages-container"></div>
 
-        <div class="input-area">
-            <input type="text" id="messageInput" placeholder="اكتب رسالة مشفرة...">
-            <button onclick="sendEncryptedMessage()">➤</button>
+            <div class="input-area">
+                
+                <div id="recordingUI" class="recording-overlay hidden">
+                    <div class="rec-indicator">
+                        <i class="fas fa-microphone"></i> 
+                        <span id="recTimer">00:00</span>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="icon-btn" onclick="cancelRecording()" style="color: #f15c6d;"><i class="fas fa-trash"></i></button>
+                        <button class="icon-btn" onclick="stopAndSendRecording()" style="color: var(--primary);"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+
+                <label for="imageInput" class="icon-btn" style="cursor: pointer;">
+                    <i class="fas fa-camera"></i>
+                </label>
+                <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageSelect(this)">
+                
+                <input type="text" id="msgInput" placeholder="رسالة..." style="margin: 0;">
+                
+                <button class="icon-btn" id="recordBtn" onclick="startRecording()">
+                    <i class="fas fa-microphone"></i>
+                </button>
+
+                <button class="icon-btn" onclick="sendMsg()" style="color: var(--primary);">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="emptyState" class="chat-area" style="justify-content: center; align-items: center; text-align: center; color: var(--text-gray);">
+            <i class="fas fa-lock" style="font-size: 50px; margin-bottom: 20px;"></i>
+            <h3>اختر غرفة للبدء</h3>
+        </div>
+    </div>
+
+    <div id="createRoomModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>إنشاء / انضمام</h3>
+            <input type="text" id="roomNameInput" placeholder="اسم الغرفة">
+            <input type="password" id="roomPassInput" placeholder="كلمة السر">
+            <div style="display: flex; gap: 10px;">
+                <button onclick="joinRoomAction()">دخول</button>
+                <button onclick="closeModal()" style="background: #333;">إلغاء</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // 1. ضع بياناتك من Firebase هنا (كما فعلنا سابقاً)
+        // --- 1. إعدادات Firebase (ضع بياناتك هنا) ---
         const firebaseConfig = {
             apiKey: "AIzaSy...", 
             authDomain: "chat-9c623.firebaseapp.com",
@@ -61,47 +353,279 @@
             appId: "1:858118572582:web:979ef639fed422a22ff4e7"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        let myName = "";
-        let encryptionKey = "";
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        // --- دوال التشفير من مشروعك الثاني ---
+        let currentUser = null;
+        let currentRoom = null;
+        let currentKey = null;
+
+        // --- 2. تشفير / فك تشفير ---
         const uint8ToBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
         const base64ToUint8 = (str) => new Uint8Array(atob(str).split('').map(c => c.charCodeAt(0)));
 
         async function encryptData(text, password) {
-            const encoder = new TextEncoder();
-            const salt = crypto.getRandomValues(new Uint8Array(16));
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
-            const aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["encrypt"]);
-            const encrypted = await crypto.subtle.encrypt({name: "AES-GCM", iv}, aesKey, encoder.encode(text));
-            const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
-            result.set(salt, 0); result.set(iv, salt.length); result.set(new Uint8Array(encrypted), salt.length + iv.length);
-            return uint8ToBase64(result);
+            try {
+                const encoder = new TextEncoder();
+                const salt = crypto.getRandomValues(new Uint8Array(16));
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
+                const aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["encrypt"]);
+                const encrypted = await crypto.subtle.encrypt({name: "AES-GCM", iv}, aesKey, encoder.encode(text));
+                const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+                result.set(salt, 0); result.set(iv, salt.length); result.set(new Uint8Array(encrypted), salt.length + iv.length);
+                return uint8ToBase64(result);
+            } catch (e) { return null; }
         }
 
- async function decryptData(cipherB64, password) {
-    try {
-        const bytes = base64ToUint8(cipherB64);
-        const salt = bytes.slice(0, 16); 
-        const iv = bytes.slice(16, 28); 
-        const data = bytes.slice(28);
-        const encoder = new TextEncoder();
-        const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
-        const aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
-        const decrypted = await crypto.subtle.decrypt({name: "AES-GCM", iv}, aesKey, data);
-        return new TextDecoder().decode(decrypted);
-    } catch (e) { 
-        return "••••••••••••••••"; 
-    }
-}
+        async function decryptData(cipherB64, password) {
+            try {
+                const bytes = base64ToUint8(cipherB64);
+                const salt = bytes.slice(0, 16); 
+                const iv = bytes.slice(16, 28); 
+                const data = bytes.slice(28);
+                const encoder = new TextEncoder();
+                const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), {name: "PBKDF2"}, false, ["deriveKey"]);
+                const aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
+                const decrypted = await crypto.subtle.decrypt({name: "AES-GCM", iv}, aesKey, data);
+                return new TextDecoder().decode(decrypted);
+            } catch (e) { 
+                return "🔒 [بيانات مشفرة]"; 
+            }
+        }
 
+        // --- 3. إدارة التسجيل والدخول ---
+        function selectAvatar(emoji) {
+            document.getElementById('selectedAvatar').value = emoji;
+            document.querySelectorAll('#auth-screen .avatar').forEach(el => el.style.border = "none");
+            event.target.style.border = "2px solid #00a884";
+        }
 
-        // --- إدارة التطبيق ---
-        function startApp() {
-            myName = document.getElementById("username").value;
+        async function checkAndLogin() {
+            const username = document.getElementById('usernameInput').value.trim().toLowerCase();
+            const avatar = document.getElementById('selectedAvatar').value;
+            if (username.length < 3) return alert("الاسم قصير");
+
+            const snapshot = await db.ref('users/' + username).once('value');
+            if (snapshot.exists()) {
+                currentUser = snapshot.val();
+            } else {
+                const newUser = { username: username, avatar: avatar, joinedAt: Date.now() };
+                await db.ref('users/' + username).set(newUser);
+                currentUser = newUser;
+            }
+            
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('app-dashboard').classList.remove('hidden');
+            document.getElementById('myNameDisplay').innerText = currentUser.username;
+            document.getElementById('myAvatarDisplay').innerText = currentUser.avatar;
+            loadMyRooms();
+        }
+
+        // --- 4. إدارة الغرف ---
+        function showCreateRoomModal() { document.getElementById('createRoomModal').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('createRoomModal').classList.add('hidden'); }
+
+        function joinRoomAction() {
+            const roomName = document.getElementById('roomNameInput').value.trim();
+            const roomPass = document.getElementById('roomPassInput').value;
+            if (!roomName || !roomPass) return;
+
+            let myRooms = JSON.parse(localStorage.getItem('myRooms_' + currentUser.username) || "[]");
+            if (!myRooms.find(r => r.name === roomName)) {
+                myRooms.push({ name: roomName, pass: roomPass });
+                localStorage.setItem('myRooms_' + currentUser.username, JSON.stringify(myRooms));
+            }
+            closeModal();
+            loadMyRooms();
+            openRoom(roomName, roomPass);
+        }
+
+        function loadMyRooms() {
+            const list = document.getElementById('roomsList');
+            const myRooms = JSON.parse(localStorage.getItem('myRooms_' + currentUser.username) || "[]");
+            list.innerHTML = "";
+            if(myRooms.length === 0) list.innerHTML = `<p style="text-align: center; color: var(--text-gray);">لا توجد غرف</p>`;
+            
+            myRooms.forEach(room => {
+                const item = document.createElement('div');
+                item.className = 'room-item';
+                item.onclick = () => openRoom(room.name, room.pass);
+                item.innerHTML = `<div class="avatar" style="background: #2a3942;"><i class="fas fa-users"></i></div><div><div style="font-weight: bold;">${room.name}</div></div>`;
+                list.appendChild(item);
+            });
+        }
+
+        // --- 5. الشات ---
+        let messageListener = null;
+
+        function openRoom(name, pass) {
+            currentRoom = name;
+            currentKey = pass;
+            document.getElementById('currentRoomName').innerText = name;
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('chatArea').classList.remove('hidden');
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
+
+            document.getElementById('messagesContainer').innerHTML = "";
+            if (messageListener) db.ref('messages/' + name).off();
+
+            messageListener = db.ref('messages/' + name).limitToLast(50).on('child_added', async (snapshot) => {
+                await renderMessage(snapshot.val());
+            });
+        }
+
+        function goBackToRooms() {
+            document.getElementById('chatArea').classList.add('hidden');
+            document.getElementById('sidebar').classList.remove('hidden');
+            currentRoom = null;
+        }
+
+        async function renderMessage(msg) {
+            const container = document.getElementById('messagesContainer');
+            const decryptedText = await decryptData(msg.cipher, currentKey);
+            const div = document.createElement('div');
+            const isMe = msg.sender === currentUser.username;
+            div.className = `msg ${isMe ? 'me' : 'other'}`;
+            
+            let content = `<span class="msg-sender">${msg.sender}</span>`;
+            
+            // تحقق من نوع المحتوى (صورة، صوت، نص)
+            if (decryptedText.startsWith('data:image')) {
+                content += `<img src="${decryptedText}" class="msg-img" onclick="window.open(this.src)">`;
+            } else if (decryptedText.startsWith('data:audio')) {
+                content += `<audio controls src="${decryptedText}"></audio>`;
+            } else {
+                content += `<span>${decryptedText}</span>`;
+            }
+
+            const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            content += `<div class="msg-time">${time}</div>`;
+            div.innerHTML = content;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendMsg() {
+            const input = document.getElementById('msgInput');
+            const text = input.value.trim();
+            if (!text || !currentRoom) return;
+            const encrypted = await encryptData(text, currentKey);
+            db.ref('messages/' + currentRoom).push({ sender: currentUser.username, cipher: encrypted, timestamp: Date.now() });
+            input.value = "";
+        }
+
+        function handleImageSelect(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = async function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const maxWidth = 500; 
+                        const scaleSize = maxWidth / img.width;
+                        canvas.width = maxWidth;
+                        canvas.height = img.height * scaleSize;
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        const base64String = canvas.toDataURL('image/jpeg', 0.5);
+                        const encryptedImg = await encryptData(base64String, currentKey);
+                        db.ref('messages/' + currentRoom).push({ sender: currentUser.username, cipher: encryptedImg, timestamp: Date.now() });
+                    }
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- 6. تسجيل الصوت (Voice Recording) ---
+        let mediaRecorder;
+        let audioChunks = [];
+        let recInterval;
+        let recSeconds = 0;
+
+        async function startRecording() {
+            if (!currentRoom) return alert("اختر غرفة أولاً");
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    // تحويل الصوت إلى Blob ثم Base64
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.readAsDataURL(audioBlob);
+                    reader.onloadend = async () => {
+                        const base64Audio = reader.result;
+                        // تشفير الصوت وإرساله
+                        const encryptedAudio = await encryptData(base64Audio, currentKey);
+                        if (encryptedAudio) {
+                            db.ref('messages/' + currentRoom).push({ 
+                                sender: currentUser.username, 
+                                cipher: encryptedAudio, 
+                                timestamp: Date.now() 
+                            });
+                        }
+                    };
+                    clearInterval(recInterval);
+                    toggleRecUI(false);
+                };
+
+                mediaRecorder.start();
+                toggleRecUI(true);
+                
+                // مؤقت
+                recSeconds = 0;
+                recInterval = setInterval(() => {
+                    recSeconds++;
+                    const min = Math.floor(recSeconds / 60).toString().padStart(2, '0');
+                    const sec = (recSeconds % 60).toString().padStart(2, '0');
+                    document.getElementById('recTimer').innerText = `${min}:${sec}`;
+                }, 1000);
+
+            } catch (err) {
+                alert("يرجى السماح بصلاحية الميكروفون 🎤");
+                console.error(err);
+            }
+        }
+
+        function stopAndSendRecording() {
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.stop();
+            }
+        }
+
+        function cancelRecording() {
+            if (mediaRecorder) {
+                // إيقاف دون إرسال (نوقف الـ onstop)
+                mediaRecorder.onstop = null;
+                mediaRecorder.stop();
+                clearInterval(recInterval);
+                toggleRecUI(false);
+            }
+        }
+
+        function toggleRecUI(show) {
+            if (show) {
+                document.getElementById('recordingUI').classList.remove('hidden');
+            } else {
+                document.getElementById('recordingUI').classList.add('hidden');
+            }
+        }
+
+        // Support Enter Key
+        document.getElementById('msgInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendMsg();
+        });
+
+    </script>
+</body>
+</html>
             encryptionKey = document.getElementById("chatPassword").value;
             if (myName && encryptionKey) {
                 document.getElementById("login-screen").style.display = "none";
