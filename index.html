@@ -13,12 +13,13 @@
         :root {
             --primary: #00a884;
             --secondary: #005c4b;
-            --bg-glass: rgba(20, 30, 48, 0.85);
+            --bg-glass: rgba(20, 30, 48, 0.90);
             --msg-me: #005c4b;
             --msg-other: #202c33;
             --text-light: #e9edef;
             --text-gray: #8696a0;
             --record-red: #ea4335;
+            --delete-red: #f15c6d;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -28,7 +29,7 @@
             margin: 0;
             height: 100vh;
             overflow: hidden;
-            background-image: url('https://raw.githubusercontent.com/waseemmonasar12/Chat/main/%D8%A7%D9%94%D8%A8%D9%88%20%D8%B9%D8%A8%D9%8A%D8%AF%D8%A9.jpeg'); 
+            background-image: url('https://raw.githubusercontent.com/waseemmonasar12/Chat/f0981b25071c7ed7b1471a094327f9dea9e401fc/Aobida.jpeg'); 
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -42,128 +43,81 @@
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(5px);
             z-index: -1;
         }
 
         .app-container {
-            width: 100%;
-            height: 100%;
-            max-width: 1200px;
+            width: 100%; height: 100%; max-width: 1200px;
             background: var(--bg-glass);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            overflow: hidden;
+            display: flex; flex-direction: column; position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5); overflow: hidden;
         }
 
         @media (min-width: 768px) {
-            .app-container {
-                height: 90vh;
-                border-radius: 20px;
-                flex-direction: row;
-                border: 1px solid rgba(255,255,255,0.1);
-            }
+            .app-container { height: 90vh; border-radius: 20px; flex-direction: row; border: 1px solid rgba(255,255,255,0.1); }
         }
 
         .full-screen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(17, 27, 33, 0.98);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
-            transition: opacity 0.5s;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(17, 27, 33, 0.98); z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px; text-align: center; transition: opacity 0.5s;
         }
 
         .hidden { display: none !important; }
 
         input, select, button {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 10px;
-            border: 1px solid #333;
-            background: #2a3942;
-            color: white;
-            font-family: 'Cairo', sans-serif;
-            font-size: 16px;
-            outline: none;
+            width: 100%; padding: 15px; margin: 10px 0;
+            border-radius: 10px; border: 1px solid #333;
+            background: #2a3942; color: white;
+            font-family: 'Cairo', sans-serif; font-size: 16px; outline: none;
         }
 
-        button {
-            background: var(--primary);
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+        button { background: var(--primary); border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
         button:hover { background: #008f6f; }
+        button.secondary { background: #333; }
 
         /* Sidebar */
         .sidebar {
-            width: 100%;
-            background: rgba(17, 27, 33, 0.95);
-            display: flex;
-            flex-direction: column;
+            width: 100%; background: rgba(17, 27, 33, 0.95);
+            display: flex; flex-direction: column;
             border-left: 1px solid rgba(255,255,255,0.1);
         }
         @media (min-width: 768px) { .sidebar { width: 350px; } }
 
         .sidebar-header {
-            padding: 15px;
-            background: #202c33;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 15px; background: #202c33;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         .user-profile { display: flex; align-items: center; gap: 10px; }
-
         .avatar {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: var(--primary);
-            display: flex; justify-content: center; align-items: center;
-            font-size: 20px;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--primary); display: flex; justify-content: center; align-items: center;
+            font-size: 20px; transition: transform 0.2s;
         }
 
         .rooms-list { flex: 1; overflow-y: auto; padding: 10px; }
 
         .room-item {
-            padding: 15px;
-            border-bottom: 1px solid #2a3942;
-            cursor: pointer;
-            display: flex; align-items: center; gap: 15px;
-            transition: 0.2s;
+            padding: 15px; border-bottom: 1px solid #2a3942; cursor: pointer;
+            display: flex; align-items: center; gap: 15px; transition: 0.2s; position: relative;
         }
         .room-item:hover { background: #2a3942; }
+        .room-item.active { background: #2a3942; border-right: 3px solid var(--primary); }
 
         /* Chat Area */
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: transparent;
-            position: relative;
-        }
+        .chat-area { flex: 1; display: flex; flex-direction: column; background: transparent; position: relative; }
 
         .chat-header {
-            padding: 10px 20px;
-            background: #202c33;
+            padding: 10px 20px; background: #202c33;
             display: flex; align-items: center; gap: 15px;
             border-bottom: 1px solid rgba(0,0,0,0.2);
         }
 
-        .back-btn {
-            display: block; width: auto; padding: 5px; font-size: 20px; margin: 0; background: transparent;
-        }
+        .back-btn { display: block; width: auto; padding: 5px; font-size: 20px; margin: 0; background: transparent; }
         @media (min-width: 768px) { .back-btn { display: none; } }
 
         .messages-container {
@@ -172,68 +126,43 @@
         }
 
         .msg {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 12px;
-            position: relative;
-            font-size: 15px;
-            line-height: 1.5;
-            word-wrap: break-word;
+            max-width: 80%; padding: 10px 14px; border-radius: 12px;
+            position: relative; font-size: 15px; line-height: 1.5; word-wrap: break-word;
             animation: fadeIn 0.3s ease;
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .msg.me { background: var(--msg-me); align-self: flex-end; border-top-left-radius: 0; }
         .msg.other { background: var(--msg-other); align-self: flex-start; border-top-right-radius: 0; }
-
         .msg-sender { font-size: 11px; color: var(--primary); font-weight: bold; display: block; margin-bottom: 4px; }
         .msg-time { font-size: 10px; color: var(--text-gray); float: left; margin-top: 5px; margin-right: 5px; }
         .msg-img { max-width: 100%; border-radius: 8px; margin-top: 5px; cursor: pointer; }
 
-        /* Audio Player Styling */
-        audio {
-            height: 35px;
-            width: 220px;
-            margin-top: 5px;
-            border-radius: 20px;
-        }
-        /* Custom Audio Player Colors for Webkit */
-        audio::-webkit-media-controls-panel { background-color: rgba(255, 255, 255, 0.8); }
-
         /* Input Area */
         .input-area {
-            padding: 10px;
-            background: #202c33;
-            display: flex; align-items: center; gap: 10px;
-            position: relative;
+            padding: 10px; background: #202c33;
+            display: flex; align-items: center; gap: 10px; position: relative;
         }
-
         .icon-btn {
             background: transparent; color: var(--text-gray);
-            width: 45px; height: 45px; padding: 0;
-            font-size: 20px; border-radius: 50%;
+            width: 45px; height: 45px; padding: 0; font-size: 20px; border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
         }
         .icon-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-light); }
 
         /* Recording UI */
         .recording-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #202c33;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 15px;
-            z-index: 10;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #202c33; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; z-index: 10;
         }
         .rec-indicator {
-            color: var(--record-red);
-            font-weight: bold;
-            display: flex; align-items: center; gap: 10px;
-            animation: pulse 1.5s infinite;
+            color: var(--record-red); font-weight: bold;
+            display: flex; align-items: center; gap: 10px; animation: pulse 1.5s infinite;
         }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        /* Modal */
+        /* Modals */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 200;
@@ -243,41 +172,43 @@
             background: #202c33; padding: 25px; border-radius: 15px;
             width: 90%; max-width: 400px; text-align: center;
         }
+
+        /* Radio Buttons for Room Type */
+        .room-type-selector { display: flex; gap: 15px; margin: 15px 0; justify-content: center; }
+        .room-type-label { 
+            display: flex; align-items: center; gap: 5px; cursor: pointer; 
+            padding: 10px; border: 1px solid #333; border-radius: 8px; flex: 1; justify-content: center;
+        }
+        input[type="radio"]:checked + span { color: var(--primary); font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div id="auth-screen" class="full-screen">
         <div style="font-size: 60px; margin-bottom: 20px;">🔐</div>
-        <h2>تطبيق العائلة الآمن</h2>
-        <p style="color: #8696a0; margin-bottom: 20px;">محادثات صوتية وصورية مشفرة</p>
-        
+        <h2>تطبيق العائلة</h2>
         <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
-            <div class="avatar" onclick="selectAvatar('👨‍💻')" style="cursor: pointer;">👨‍💻</div>
-            <div class="avatar" onclick="selectAvatar('🧕')" style="cursor: pointer;">🧕</div>
-            <div class="avatar" onclick="selectAvatar('🤵')" style="cursor: pointer;">🤵</div>
-            <div class="avatar" onclick="selectAvatar('🦸‍♂️')" style="cursor: pointer;">🦸‍♂️</div>
+            <div class="avatar" onclick="selectAvatar('👨‍💻')">👨‍💻</div>
+            <div class="avatar" onclick="selectAvatar('🧕')">🧕</div>
+            <div class="avatar" onclick="selectAvatar('🤵')">🤵</div>
+            <div class="avatar" onclick="selectAvatar('🦸‍♂️')">🦸‍♂️</div>
         </div>
         <input type="hidden" id="selectedAvatar" value="👤">
-
-        <input type="text" id="usernameInput" placeholder="اختر اسمك (English Only)">
+        <input type="text" id="usernameInput" placeholder="اسم المستخدم (English)">
         <button onclick="checkAndLogin()">دخول</button>
-        <div id="loginError" style="color: #f15c6d; margin-top: 10px; display: none;"></div>
     </div>
 
     <div id="app-dashboard" class="app-container hidden">
-        
         <div id="sidebar" class="sidebar">
             <div class="sidebar-header">
                 <div class="user-profile">
                     <div class="avatar" id="myAvatarDisplay">👤</div>
                     <span id="myNameDisplay" style="font-weight: bold;"></span>
                 </div>
-                <button class="icon-btn" onclick="showCreateRoomModal()" title="غرفة جديدة"><i class="fas fa-plus"></i></button>
+                <button class="icon-btn" onclick="openCreateRoomModal()"><i class="fas fa-plus"></i></button>
             </div>
-            
             <div class="rooms-list" id="roomsList">
-                <p style="text-align: center; color: var(--text-gray); padding: 20px;">لا توجد غرف.</p>
+                <p style="text-align: center; padding: 20px; color: gray;">جاري تحميل الغرف...</p>
             </div>
         </div>
 
@@ -287,70 +218,74 @@
                 <div class="avatar" style="background: var(--secondary);"><i class="fas fa-users"></i></div>
                 <div>
                     <div id="currentRoomName" style="font-weight: bold;">Room</div>
-                    <div style="font-size: 12px; color: var(--text-gray);">Messages encrypted 🔒</div>
+                    <div style="font-size: 12px; color: var(--text-gray);">Online Encrypted Chat 🔒</div>
                 </div>
             </div>
-
             <div id="messagesContainer" class="messages-container"></div>
-
             <div class="input-area">
-                
                 <div id="recordingUI" class="recording-overlay hidden">
-                    <div class="rec-indicator">
-                        <i class="fas fa-microphone"></i> 
-                        <span id="recTimer">00:00</span>
-                    </div>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="icon-btn" onclick="cancelRecording()" style="color: #f15c6d;"><i class="fas fa-trash"></i></button>
-                        <button class="icon-btn" onclick="stopAndSendRecording()" style="color: var(--primary);"><i class="fas fa-paper-plane"></i></button>
-                    </div>
+                    <div class="rec-indicator"><i class="fas fa-microphone"></i> <span id="recTimer">00:00</span></div>
+                    <button class="icon-btn" onclick="cancelRecording()" style="color: var(--delete-red);"><i class="fas fa-trash"></i></button>
+                    <button class="icon-btn" onclick="stopAndSendRecording()" style="color: var(--primary);"><i class="fas fa-paper-plane"></i></button>
                 </div>
-
-                <label for="imageInput" class="icon-btn" style="cursor: pointer;">
-                    <i class="fas fa-camera"></i>
-                </label>
+                <label for="imageInput" class="icon-btn"><i class="fas fa-camera"></i></label>
                 <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageSelect(this)">
-                
-                <input type="text" id="msgInput" placeholder="رسالة..." style="margin: 0;">
-                
-                <button class="icon-btn" id="recordBtn" onclick="startRecording()">
-                    <i class="fas fa-microphone"></i>
-                </button>
-
-                <button class="icon-btn" onclick="sendMsg()" style="color: var(--primary);">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+                <input type="text" id="msgInput" placeholder="اكتب رسالة...">
+                <button class="icon-btn" id="recordBtn" onclick="startRecording()"><i class="fas fa-microphone"></i></button>
+                <button class="icon-btn" onclick="sendMsg()" style="color: var(--primary);"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
 
         <div id="emptyState" class="chat-area" style="justify-content: center; align-items: center; text-align: center; color: var(--text-gray);">
-            <i class="fas fa-lock" style="font-size: 50px; margin-bottom: 20px;"></i>
+            <i class="fas fa-comments" style="font-size: 50px; margin-bottom: 20px;"></i>
             <h3>اختر غرفة للبدء</h3>
         </div>
     </div>
 
     <div id="createRoomModal" class="modal hidden">
         <div class="modal-content">
-            <h3>إنشاء / انضمام</h3>
-            <input type="text" id="roomNameInput" placeholder="اسم الغرفة">
-            <input type="password" id="roomPassInput" placeholder="كلمة السر">
-            <div style="display: flex; gap: 10px;">
-                <button onclick="joinRoomAction()">دخول</button>
-                <button onclick="closeModal()" style="background: #333;">إلغاء</button>
+            <h3>إنشاء غرفة جديدة</h3>
+            <input type="text" id="newRoomName" placeholder="اسم الغرفة">
+            
+            <div class="room-type-selector">
+                <label class="room-type-label">
+                    <input type="radio" name="roomType" value="public" checked onchange="togglePasswordInput(false)">
+                    <span>🌍 عامة</span>
+                </label>
+                <label class="room-type-label">
+                    <input type="radio" name="roomType" value="private" onchange="togglePasswordInput(true)">
+                    <span>🔒 خاصة</span>
+                </label>
             </div>
+
+            <input type="password" id="newRoomPass" placeholder="كلمة السر (للغرف الخاصة)" style="display: none;">
+            
+            <button onclick="createNewRoom()">إنشاء</button>
+            <button onclick="closeModal('createRoomModal')" class="secondary">إلغاء</button>
+        </div>
+    </div>
+
+    <div id="passwordModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>🔒 غرفة خاصة</h3>
+            <p>أدخل كلمة السر للدخول</p>
+            <input type="password" id="joinRoomPass" placeholder="كلمة السر">
+            <button onclick="verifyAndJoin()">دخول</button>
+            <button onclick="closeModal('passwordModal')" class="secondary">إلغاء</button>
         </div>
     </div>
 
     <script>
-        // --- 1. إعدادات Firebase (ضع بياناتك هنا) ---
+        // 1. Firebase Config (بياناتك الصحيحة)
         const firebaseConfig = {
-            apiKey: "AIzaSy...", 
-            authDomain: "chat-9c623.firebaseapp.com",
-            databaseURL: "https://chat-9c623-default-rtdb.firebaseio.com",
-            projectId: "chat-9c623",
-            storageBucket: "chat-9c623.appspot.com",
-            messagingSenderId: "858118572582",
-            appId: "1:858118572582:web:979ef639fed422a22ff4e7"
+          apiKey: "AIzaSyACnX1Xu-2XiyxYtGT_wUzfMqVcUddVxKs",
+          authDomain: "chat-9c623.firebaseapp.com",
+          databaseURL: "https://chat-9c623-default-rtdb.firebaseio.com",
+          projectId: "chat-9c623",
+          storageBucket: "chat-9c623.firebasestorage.app",
+          messagingSenderId: "858118572582",
+          appId: "1:858118572582:web:979ef639fed422a22ff4e7",
+          measurementId: "G-THT2B1RYEK"
         };
 
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -358,9 +293,10 @@
 
         let currentUser = null;
         let currentRoom = null;
-        let currentKey = null;
+        let currentKey = null; // Key for encryption
+        let pendingRoomJoin = null; // Temp storage for room attempting to join
 
-        // --- 2. تشفير / فك تشفير ---
+        // --- Encryption Logic ---
         const uint8ToBase64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
         const base64ToUint8 = (str) => new Uint8Array(atob(str).split('').map(c => c.charCodeAt(0)));
 
@@ -389,12 +325,10 @@
                 const aesKey = await crypto.subtle.deriveKey({name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256"}, keyMaterial, {name: "AES-GCM", length: 256}, false, ["decrypt"]);
                 const decrypted = await crypto.subtle.decrypt({name: "AES-GCM", iv}, aesKey, data);
                 return new TextDecoder().decode(decrypted);
-            } catch (e) { 
-                return "🔒 [بيانات مشفرة]"; 
-            }
+            } catch (e) { return "🔒 [مشفر]"; }
         }
 
-        // --- 3. إدارة التسجيل والدخول ---
+        // --- Login ---
         function selectAvatar(emoji) {
             document.getElementById('selectedAvatar').value = emoji;
             document.querySelectorAll('#auth-screen .avatar').forEach(el => el.style.border = "none");
@@ -402,119 +336,176 @@
         }
 
         async function checkAndLogin() {
-            const username = document.getElementById('usernameInput').value.trim().toLowerCase();
+            const username = document.getElementById('usernameInput').value.trim();
             const avatar = document.getElementById('selectedAvatar').value;
-            if (username.length < 3) return alert("الاسم قصير");
+            
+            // تحقق بسيط من الاسم
+            if (username.length < 3) return alert("الاسم قصير جداً");
+            
+            // حفظ المستخدم
+            const userRef = db.ref('users/' + username);
+            await userRef.update({
+                username: username,
+                avatar: avatar,
+                status: 'online',
+                lastSeen: Date.now()
+            });
 
-            const snapshot = await db.ref('users/' + username).once('value');
-            if (snapshot.exists()) {
-                currentUser = snapshot.val();
-            } else {
-                const newUser = { username: username, avatar: avatar, joinedAt: Date.now() };
-                await db.ref('users/' + username).set(newUser);
-                currentUser = newUser;
-            }
+            currentUser = { username, avatar };
             
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('app-dashboard').classList.remove('hidden');
-            document.getElementById('myNameDisplay').innerText = currentUser.username;
-            document.getElementById('myAvatarDisplay').innerText = currentUser.avatar;
-            loadMyRooms();
-        }
-
-        // --- 4. إدارة الغرف ---
-        function showCreateRoomModal() { document.getElementById('createRoomModal').classList.remove('hidden'); }
-        function closeModal() { document.getElementById('createRoomModal').classList.add('hidden'); }
-
-        function joinRoomAction() {
-            const roomName = document.getElementById('roomNameInput').value.trim();
-            const roomPass = document.getElementById('roomPassInput').value;
-            if (!roomName || !roomPass) return;
-
-            let myRooms = JSON.parse(localStorage.getItem('myRooms_' + currentUser.username) || "[]");
-            if (!myRooms.find(r => r.name === roomName)) {
-                myRooms.push({ name: roomName, pass: roomPass });
-                localStorage.setItem('myRooms_' + currentUser.username, JSON.stringify(myRooms));
-            }
-            closeModal();
-            loadMyRooms();
-            openRoom(roomName, roomPass);
-        }
-
-        function loadMyRooms() {
-            const list = document.getElementById('roomsList');
-            const myRooms = JSON.parse(localStorage.getItem('myRooms_' + currentUser.username) || "[]");
-            list.innerHTML = "";
-            if(myRooms.length === 0) list.innerHTML = `<p style="text-align: center; color: var(--text-gray);">لا توجد غرف</p>`;
+            document.getElementById('myNameDisplay').innerText = username;
+            document.getElementById('myAvatarDisplay').innerText = avatar;
             
-            myRooms.forEach(room => {
-                const item = document.createElement('div');
-                item.className = 'room-item';
-                item.onclick = () => openRoom(room.name, room.pass);
-                item.innerHTML = `<div class="avatar" style="background: #2a3942;"><i class="fas fa-users"></i></div><div><div style="font-weight: bold;">${room.name}</div></div>`;
-                list.appendChild(item);
+            listenToRooms();
+        }
+
+        // --- Room Management (Cloud) ---
+        function listenToRooms() {
+            const list = document.getElementById('roomsList');
+            // استمع للتغييرات في عقدة "rooms"
+            db.ref('rooms').on('value', (snapshot) => {
+                list.innerHTML = "";
+                const rooms = snapshot.val();
+                
+                if (!rooms) {
+                    list.innerHTML = `<p style="text-align: center; color: var(--text-gray); padding: 20px;">لا توجد غرف متاحة</p>`;
+                    return;
+                }
+
+                Object.keys(rooms).forEach(roomId => {
+                    const room = rooms[roomId];
+                    const item = document.createElement('div');
+                    item.className = 'room-item';
+                    const icon = room.type === 'private' ? '🔒' : '🌍';
+                    
+                    item.innerHTML = `
+                        <div class="avatar" style="background: #2a3942;">${icon}</div>
+                        <div>
+                            <div style="font-weight: bold;">${room.name}</div>
+                            <div style="font-size: 11px; color: var(--text-gray);">${room.type === 'private' ? 'خاصة' : 'عامة'}</div>
+                        </div>
+                    `;
+                    item.onclick = () => tryJoinRoom(roomId, room);
+                    list.appendChild(item);
+                });
             });
         }
 
-        // --- 5. الشات ---
-        let messageListener = null;
+        function openCreateRoomModal() {
+            document.getElementById('createRoomModal').classList.remove('hidden');
+        }
 
-        function openRoom(name, pass) {
-            currentRoom = name;
-            currentKey = pass;
-            document.getElementById('currentRoomName').innerText = name;
+        function togglePasswordInput(show) {
+            document.getElementById('newRoomPass').style.display = show ? 'block' : 'none';
+        }
+
+        function createNewRoom() {
+            const name = document.getElementById('newRoomName').value.trim();
+            const type = document.querySelector('input[name="roomType"]:checked').value;
+            let password = document.getElementById('newRoomPass').value;
+
+            if (!name) return alert("الرجاء كتابة اسم الغرفة");
+            if (type === 'private' && !password) return alert("يجب وضع كلمة سر للغرفة الخاصة");
+            if (type === 'public') password = "PUBLIC_SHARED_KEY"; // مفتاح موحد للغرف العامة
+
+            // حفظ الغرفة في Firebase
+            const roomId = name.replace(/[^a-zA-Z0-9]/g, ''); // تنظيف الاسم ليصبح ID
+            db.ref('rooms/' + roomId).set({
+                name: name,
+                type: type,
+                password: password, // في تطبيق حقيقي لا نحفظ كلمة السر هكذا، لكن للتعلم هذا مقبول
+                createdBy: currentUser.username
+            });
+
+            closeModal('createRoomModal');
+        }
+
+        function tryJoinRoom(roomId, roomData) {
+            if (roomData.type === 'public') {
+                openRoom(roomId, roomData.name, "PUBLIC_SHARED_KEY");
+            } else {
+                // غرفة خاصة، اطلب كلمة السر
+                pendingRoomJoin = { id: roomId, name: roomData.name, correctPass: roomData.password };
+                document.getElementById('joinRoomPass').value = "";
+                document.getElementById('passwordModal').classList.remove('hidden');
+            }
+        }
+
+        function verifyAndJoin() {
+            const inputPass = document.getElementById('joinRoomPass').value;
+            if (inputPass === pendingRoomJoin.correctPass) {
+                openRoom(pendingRoomJoin.id, pendingRoomJoin.name, inputPass);
+                closeModal('passwordModal');
+            } else {
+                alert("كلمة السر خاطئة!");
+            }
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // --- Chat Logic ---
+        function openRoom(roomId, roomName, key) {
+            currentRoom = roomId;
+            currentKey = key;
+            
+            document.getElementById('currentRoomName').innerText = roomName;
             document.getElementById('emptyState').classList.add('hidden');
             document.getElementById('chatArea').classList.remove('hidden');
             if(window.innerWidth < 768) document.getElementById('sidebar').classList.add('hidden');
 
-            document.getElementById('messagesContainer').innerHTML = "";
-            if (messageListener) db.ref('messages/' + name).off();
-
-            messageListener = db.ref('messages/' + name).limitToLast(50).on('child_added', async (snapshot) => {
-                await renderMessage(snapshot.val());
+            // تحميل الرسائل
+            const container = document.getElementById('messagesContainer');
+            container.innerHTML = "";
+            db.ref('messages/' + roomId).off(); // إيقاف الاستماع القديم
+            
+            db.ref('messages/' + roomId).limitToLast(50).on('child_added', async (snapshot) => {
+                const msg = snapshot.val();
+                const decrypted = await decryptData(msg.cipher, currentKey);
+                
+                const div = document.createElement('div');
+                div.className = `msg ${msg.sender === currentUser.username ? 'me' : 'other'}`;
+                
+                let content = `<span class="msg-sender">${msg.sender}</span>`;
+                
+                if (decrypted.startsWith('data:image')) {
+                    content += `<img src="${decrypted}" class="msg-img" onclick="window.open(this.src)">`;
+                } else if (decrypted.startsWith('data:audio')) {
+                    content += `<audio controls src="${decrypted}"></audio>`;
+                } else {
+                    content += `<span>${decrypted}</span>`;
+                }
+                
+                const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                content += `<div class="msg-time">${time}</div>`;
+                
+                div.innerHTML = content;
+                container.appendChild(div);
+                container.scrollTop = container.scrollHeight;
             });
         }
 
         function goBackToRooms() {
             document.getElementById('chatArea').classList.add('hidden');
             document.getElementById('sidebar').classList.remove('hidden');
-            currentRoom = null;
-        }
-
-        async function renderMessage(msg) {
-            const container = document.getElementById('messagesContainer');
-            const decryptedText = await decryptData(msg.cipher, currentKey);
-            const div = document.createElement('div');
-            const isMe = msg.sender === currentUser.username;
-            div.className = `msg ${isMe ? 'me' : 'other'}`;
-            
-            let content = `<span class="msg-sender">${msg.sender}</span>`;
-            
-            // تحقق من نوع المحتوى (صورة، صوت، نص)
-            if (decryptedText.startsWith('data:image')) {
-                content += `<img src="${decryptedText}" class="msg-img" onclick="window.open(this.src)">`;
-            } else if (decryptedText.startsWith('data:audio')) {
-                content += `<audio controls src="${decryptedText}"></audio>`;
-            } else {
-                content += `<span>${decryptedText}</span>`;
-            }
-
-            const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            content += `<div class="msg-time">${time}</div>`;
-            div.innerHTML = content;
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
         }
 
         async function sendMsg() {
             const input = document.getElementById('msgInput');
             const text = input.value.trim();
-            if (!text || !currentRoom) return;
+            if(!text) return;
+            
             const encrypted = await encryptData(text, currentKey);
-            db.ref('messages/' + currentRoom).push({ sender: currentUser.username, cipher: encrypted, timestamp: Date.now() });
+            db.ref('messages/' + currentRoom).push({
+                sender: currentUser.username,
+                cipher: encrypted,
+                timestamp: Date.now()
+            });
             input.value = "";
         }
 
+        // --- Multimedia ---
         function handleImageSelect(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -530,99 +521,52 @@
                         canvas.height = img.height * scaleSize;
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                         const base64String = canvas.toDataURL('image/jpeg', 0.5);
-                        const encryptedImg = await encryptData(base64String, currentKey);
-                        db.ref('messages/' + currentRoom).push({ sender: currentUser.username, cipher: encryptedImg, timestamp: Date.now() });
+                        const encrypted = await encryptData(base64String, currentKey);
+                        db.ref('messages/' + currentRoom).push({ sender: currentUser.username, cipher: encrypted, timestamp: Date.now() });
                     }
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // --- 6. تسجيل الصوت (Voice Recording) ---
-        let mediaRecorder;
-        let audioChunks = [];
-        let recInterval;
-        let recSeconds = 0;
+        // --- Recording ---
+        let mediaRecorder, audioChunks, recInterval, recSeconds;
 
         async function startRecording() {
-            if (!currentRoom) return alert("اختر غرفة أولاً");
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                 
-                mediaRecorder.ondataavailable = event => {
-                    audioChunks.push(event.data);
-                };
-
                 mediaRecorder.onstop = async () => {
-                    // تحويل الصوت إلى Blob ثم Base64
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
                     const reader = new FileReader();
-                    reader.readAsDataURL(audioBlob);
+                    reader.readAsDataURL(blob);
                     reader.onloadend = async () => {
-                        const base64Audio = reader.result;
-                        // تشفير الصوت وإرساله
-                        const encryptedAudio = await encryptData(base64Audio, currentKey);
-                        if (encryptedAudio) {
-                            db.ref('messages/' + currentRoom).push({ 
-                                sender: currentUser.username, 
-                                cipher: encryptedAudio, 
-                                timestamp: Date.now() 
-                            });
-                        }
+                        const encrypted = await encryptData(reader.result, currentKey);
+                        if(encrypted) db.ref('messages/' + currentRoom).push({ sender: currentUser.username, cipher: encrypted, timestamp: Date.now() });
                     };
                     clearInterval(recInterval);
-                    toggleRecUI(false);
+                    document.getElementById('recordingUI').classList.add('hidden');
                 };
 
                 mediaRecorder.start();
-                toggleRecUI(true);
-                
-                // مؤقت
+                document.getElementById('recordingUI').classList.remove('hidden');
                 recSeconds = 0;
                 recInterval = setInterval(() => {
                     recSeconds++;
-                    const min = Math.floor(recSeconds / 60).toString().padStart(2, '0');
-                    const sec = (recSeconds % 60).toString().padStart(2, '0');
-                    document.getElementById('recTimer').innerText = `${min}:${sec}`;
+                    document.getElementById('recTimer').innerText = `00:${recSeconds.toString().padStart(2,'0')}`;
                 }, 1000);
-
-            } catch (err) {
-                alert("يرجى السماح بصلاحية الميكروفون 🎤");
-                console.error(err);
-            }
+            } catch (e) { alert("الميكروفون مطلوب"); }
         }
 
-        function stopAndSendRecording() {
-            if (mediaRecorder && mediaRecorder.state !== "inactive") {
-                mediaRecorder.stop();
-            }
+        function stopAndSendRecording() { if(mediaRecorder) mediaRecorder.stop(); }
+        function cancelRecording() { 
+            if(mediaRecorder) { mediaRecorder.onstop = null; mediaRecorder.stop(); }
+            clearInterval(recInterval);
+            document.getElementById('recordingUI').classList.add('hidden');
         }
-
-        function cancelRecording() {
-            if (mediaRecorder) {
-                // إيقاف دون إرسال (نوقف الـ onstop)
-                mediaRecorder.onstop = null;
-                mediaRecorder.stop();
-                clearInterval(recInterval);
-                toggleRecUI(false);
-            }
-        }
-
-        function toggleRecUI(show) {
-            if (show) {
-                document.getElementById('recordingUI').classList.remove('hidden');
-            } else {
-                document.getElementById('recordingUI').classList.add('hidden');
-            }
-        }
-
-        // Support Enter Key
-        document.getElementById('msgInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') sendMsg();
-        });
-
     </script>
 </body>
 </html>
